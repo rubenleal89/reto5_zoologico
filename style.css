@@ -1,0 +1,65 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+display: grid;
+  grid-template-areas:
+    'header header'
+    'aside main';
+  grid-template-columns: 30% 70%;
+}
+
+header{
+    grid-area: header;
+}
+
+aside{
+    grid-area: aside;
+}
+
+
+main{
+    grid-area: main;
+    margin: 10px 0px 0px 10px;
+}
+
+.iconoZoo{
+    width: 60px;
+}
+
+.asideModif{
+    min-height: 80vh;
+}
+
+.selectNav{
+    width: 100%;
+}
+
+.sect-form{
+    background-color: #212529;
+}
+
+.sect-form h1{
+    color: white;
+}
+
+.sect-form .textArea{
+    min-height: 200px;
+    resize: none;
+}
+
+.sect-form .btn-close{
+    background-color: white;
+    border: 1px solid;
+}
+
+.colorTxt{
+    color: black;
+}
+
+.listaZonas li{
+    margin: 3px 0;
+}
