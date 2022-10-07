@@ -1,5 +1,7 @@
 let enums = {
-    inicioForm: ""
+    inicioForm : "",
+    idZonas : "",
+    idEspecies : ""
 }
 
 let arrayMenssage = [];
@@ -7,10 +9,22 @@ let arrayAreas = [];
 let arraySpecie = [];
 let arrayAnimal = [];
 
-function identificador(){
-    let lastId = localStorage.getItem("lastId") || "-1";
+function idZonas(){
+    let lastId = localStorage.getItem("idZonas") || "-1";
     let newId = JSON.parse(lastId) + 1;
-    localStorage.setItem("lastId", JSON.stringify(newId));
+    localStorage.setItem("idZonas", JSON.stringify(newId));
+    return newId;
+}
+function idEspecies(){
+    let lastId = localStorage.getItem("idEspecies") || "-1";
+    let newId = JSON.parse(lastId) + 1;
+    localStorage.setItem("idEspecies", JSON.stringify(newId));
+    return newId;
+}
+function idAnimales(){
+    let lastId = localStorage.getItem("idAnimales") || "-1";
+    let newId = JSON.parse(lastId) + 1;
+    localStorage.setItem("idAnimales", JSON.stringify(newId));
     return newId;
 }
 function eventsItems(){
@@ -120,10 +134,15 @@ function selectArea() {
             let btnArea = document.createElement("button");
             btnArea.className="btn btn-secondary";
             btnArea.textContent=element.nameArea;
-            btnArea.addEventListener("click",formSpecieArea);
+            btnArea.addEventListener("click",(e)=>{
+                formSpecieArea()
+                enums.idZonas = element.Id;
+            });
             let btnSpecies = document.createElement("button");
             btnSpecies.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
-            btnSpecies.addEventListener("click",listaSpecie);
+            btnSpecies.addEventListener("click",(e)=>{
+                listaSpecie(element.Id);
+            });
             let spanToggle = document.createElement("span");
             spanToggle.className="visually-hidden";
             spanToggle.textContent="Toggle Dropend";
@@ -162,8 +181,8 @@ function formSpecieArea() {
         </form>>
     `;
 }
-function listaSpecie() {
-    // arraySpecie = JSON.parse(localStorage.getItem("Especies Zoologico"));
+function listaSpecie(id) {
+    arraySpecie = JSON.parse(localStorage.getItem("Especies"));
     let sectForm = document.getElementById("sectForm");
     sectForm.className="d-none";
     if (arraySpecie === null) {
@@ -174,30 +193,37 @@ function listaSpecie() {
         section.innerHTML="";
 
         arraySpecie.forEach(element => {
-            let divSpecie = document.createElement("div");
-            divSpecie.className="btn-group dropend";
-            let btnSpecies = document.createElement("button");
-            btnSpecies.className="btn btn-secondary";
-            btnSpecies.textContent=element.nameSpecie;
-            btnSpecies.addEventListener("click",formSpecieArea);
-            let btnVerAnimal = document.createElement("button");
-            btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
-            // btnVerAnimal.addEventListener("click",listaAnimales);
-            let spanToggle = document.createElement("span");
-            spanToggle.className="visually-hidden";
-            spanToggle.textContent="Toggle Dropend";
-            let btnAnimal = document.createElement("button");
-            btnAnimal.className="btn btn-secondary dropdown-toggle-split";
-            btnAnimal.addEventListener("click",formAnimal);
-            let spanVer = document.createElement("span");
-            spanVer.textContent="+";
+            if(id === element.idZonas){
+                let divSpecie = document.createElement("div");
+                divSpecie.className="btn-group dropend";
+                let btnSpecies = document.createElement("button");
+                btnSpecies.className="btn btn-secondary";
+                btnSpecies.textContent=element.nameSpecie;
+                btnSpecies.addEventListener("click",formSpecieArea);
+                let btnVerAnimal = document.createElement("button");
+                btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
+                // btnVerAnimal.addEventListener("click",(e)=>{
+                //     listaAnimales(element.Id);
+                // });
+                let spanToggle = document.createElement("span");
+                spanToggle.className="visually-hidden";
+                spanToggle.textContent="Toggle Dropend";
+                let btnAnimal = document.createElement("button");
+                btnAnimal.className="btn btn-secondary dropdown-toggle-split";
+                btnAnimal.addEventListener("click",(e)=>{
+                    formAnimal();
+                    enums.idEspecies = element.Id;
+                });
+                let spanVer = document.createElement("span");
+                spanVer.textContent="+";
 
-            section.insertAdjacentElement("beforeend",divSpecie);
-            divSpecie.insertAdjacentElement("beforeend",btnSpecies);
-            divSpecie.insertAdjacentElement("beforeend",btnAnimal);
-            btnAnimal.insertAdjacentElement("beforeend",spanVer);
-            divSpecie.insertAdjacentElement("beforeend",btnVerAnimal);
-            btnVerAnimal.insertAdjacentElement("beforeend",spanToggle);
+                section.insertAdjacentElement("beforeend",divSpecie);
+                divSpecie.insertAdjacentElement("beforeend",btnSpecies);
+                divSpecie.insertAdjacentElement("beforeend",btnAnimal);
+                btnAnimal.insertAdjacentElement("beforeend",spanVer);
+                divSpecie.insertAdjacentElement("beforeend",btnVerAnimal);
+                btnVerAnimal.insertAdjacentElement("beforeend",spanToggle);
+            }
         });
     }
 }
@@ -256,6 +282,7 @@ function envio(e){
     if (enums.inicioForm === "formArea") {
         let inputNameArea = document.getElementById("floatingInput").value; 
         let submit = {
+            Id : idZonas(),
             nameArea : inputNameArea
         }
         arrayAreas.push(submit);
@@ -266,19 +293,23 @@ function envio(e){
     if (enums.inicioForm === "formSpecie") {
         let inputNameSpecie = document.getElementById("floatingInput").value; 
         let submit = {
+            idZonas : enums.idZonas,
+            Id : idEspecies(),
             nameSpecie : inputNameSpecie
         }
         arraySpecie.push(submit)
-        // localStorage.setItem("Areas Zoologico",JSON.stringify(arrayAreas));
+        localStorage.setItem("Especies",JSON.stringify(arraySpecie));
         formulario.reset();
     }
     if (enums.inicioForm === "formAnimal") {
         let inputNameAnimal = document.getElementById("floatingInput").value; 
         let submit = {
+            idEspecies : enums.idEspecies,
+            Id : idAnimales(),
             nameAnimal : inputNameAnimal
         }
         arrayAnimal.push(submit);
-        // localStorage.setItem("Areas Zoologico",JSON.stringify(arrayAreas));
+        localStorage.setItem("Animales",JSON.stringify(arrayAnimal));
         formulario.reset();
     }
 }
