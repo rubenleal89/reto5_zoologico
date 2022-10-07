@@ -10,6 +10,7 @@ display: grid;
     'header header'
     'aside main';
   grid-template-columns: 30% 70%;
+  overflow-y: scroll;
 }
 
 header{
@@ -42,10 +43,6 @@ main{
     background-color: #212529;
 }
 
-.sect-form h1{
-    color: white;
-}
-
 .sect-form .textArea{
     min-height: 200px;
     resize: none;
@@ -60,6 +57,57 @@ main{
     color: black;
 }
 
-.listaZonas li{
+.divNameSpecie{
+    display: flex;
+    align-items: center;
+    background-color: #6C757D;
+    border-radius: 5px 0px 0px 5px;
+    color: white;
+    padding: 0 10px;
+}
+
+.separadoBtn{
     margin: 3px 0;
+}
+
+.sectVerEspecies{
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.divSpecies{
+    width: 40%;
+    background-color: #212529;
+    max-height: 45vh;
+    overflow-y: scroll;
+}
+
+.divAnimal{
+    width: 70%;
+    background-color: #212529;
+    max-height: 45vh;
+}
+
+.btnSpecies{
+    width: 90%;
+}
+
+.borderDivScrool{
+    border: 5px solid;
+}
+
+.whiteColorTitles{
+    color: white;
+}
+
+/* SCROLL DISEÑO */
+
+.containers-scroll::-webkit-scrollbar{
+    width: 2px;
+}
+
+.containers-scroll::-webkit-scrollbar-thumb{
+    background-color: #5A6168;
+    border-radius: 5px;
+    height: 50px;
 }

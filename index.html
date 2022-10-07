@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <!-- <script src="https://kit.fontawesome.com/e2d69b96e8.js" crossorigin="anonymous"></script> --> <!-- ICONOS  -->
 </head>
-<body>
+<body class="containers-scroll">
     <header>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container-fluid">
@@ -50,7 +50,7 @@
             <img src="./img/iconZoo.png" alt="" width="32" height="32" class="rounded-circle me-2">
             <strong>Tools</strong>
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" style="">
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li class="dropdown-item" id="newArea">New Area</li>
             <li class="dropdown-item" id="newMessage">Create Message</li>
             <li><hr class="dropdown-divider"></li>
@@ -71,10 +71,17 @@
             </div>
         </div>
 
+        <section id="sectVerEspecies" class="sectVerEspecies d-none">
+            <!-- <div id="divSpecies" class="divSpecies containers-scroll borderDivScrool">
+            </div> -->
+            <!-- <div id="divAnimal&Form" class="divAnimalForm containers-scroll borderDivScrool">
+            </div> -->
+        </section>
+
         <section id="sectForm" class="d-none">
             <div id="divContenidoForm" class="modal-content rounded-4 shadow">
                 <div class="modal-header p-5 pb-4 border-bottom-0">
-                  <h1 class="fw-bold mb-0 fs-2" id="titleForm">JAVA SCRIPT</h1>
+                  <h1 class="fw-bold mb-0 fs-2 whiteColorTitles" id="titleForm">JAVA SCRIPT</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
           
@@ -84,8 +91,6 @@
                 </div>
             </div>
         </section>
-
-        <section id="sectVerEspecies"></section>
     </main>
 
     <footer>

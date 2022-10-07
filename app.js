@@ -28,9 +28,6 @@ function idAnimales(){
     return newId;
 }
 function eventsItems(){
-    // arrayAreas = JSON.parse(localStorage.getItem("Areas Zoologico"));
-    // arrayMenssage = JSON.parse(localStorage.getItem("Comentarios"));
-
     let area = document.getElementById("newArea");
     let message = document.getElementById("newMessage");
     let close = document.getElementById("signOut");
@@ -92,6 +89,9 @@ function formComment(){
 function formArea(){
     enums.inicioForm = "formArea";
 
+    let sectionEspe = document.getElementById("sectVerEspecies");
+    sectionEspe.className="d-none";
+
     let sectForm = document.getElementById("sectForm");
     sectForm.className="sect-form";
     let titleForm = document.getElementById("titleForm");
@@ -130,12 +130,12 @@ function selectArea() {
         listaAreas.innerHTML = "";
         arrayAreas.forEach(element => {
             let divSpecie = document.createElement("li");
-            divSpecie.className="btn-group dropend";
+            divSpecie.className="btn-group dropend separadoBtn";
             let btnArea = document.createElement("button");
             btnArea.className="btn btn-secondary";
             btnArea.textContent=element.nameArea;
             btnArea.addEventListener("click",(e)=>{
-                formSpecieArea()
+                formSpecieArea(e)
                 enums.idZonas = element.Id;
             });
             let btnSpecies = document.createElement("button");
@@ -162,13 +162,16 @@ function selectArea() {
         // });
     }
 }
-function formSpecieArea() {
+function formSpecieArea(e) {
     enums.inicioForm = "formSpecie";
+
+    let sectionEspe = document.getElementById("sectVerEspecies");
+    sectionEspe.className="d-none";
 
     let sectForm = document.getElementById("sectForm");
     sectForm.className="sect-form";
     let titleForm = document.getElementById("titleForm");
-    titleForm.textContent="Create Species";
+    titleForm.textContent=`Create species for the ${e.target.textContent} zone`;
 
     formulario.innerHTML="";
     formulario.innerHTML += `
@@ -190,35 +193,46 @@ function listaSpecie(id) {
     }
     else{
         let section = document.getElementById("sectVerEspecies");
+        section.className="sectVerEspecies"
         section.innerHTML="";
+        let divContentSpecie = document.createElement("div");
+        divContentSpecie.className="divSpecies containers-scroll borderDivScrool";
+        let divContentAnimal = document.createElement("div");
+        divContentAnimal.className="divAnimal containers-scroll borderDivScrool";
+        let titleEspecie = document.createElement("h2");
+        titleEspecie.textContent="Especies";
+        titleEspecie.className="whiteColorTitles text-center";
+        section.insertAdjacentElement("beforeend",divContentSpecie);
+        section.insertAdjacentElement("beforeend",divContentAnimal);
+        divContentSpecie.insertAdjacentElement("beforeend",titleEspecie);
 
         arraySpecie.forEach(element => {
-            if(id === element.idZonas){
+            if(id === element.idZonas){                
                 let divSpecie = document.createElement("div");
-                divSpecie.className="btn-group dropend";
-                let btnSpecies = document.createElement("button");
-                btnSpecies.className="btn btn-secondary";
-                btnSpecies.textContent=element.nameSpecie;
-                btnSpecies.addEventListener("click",formSpecieArea);
+                divSpecie.className="btn-group dropend btnSpecies separadoBtn";
+                let divNameSpecie = document.createElement("div");
+                divNameSpecie.className="divNameSpecie btnSpecies";
+                divNameSpecie.textContent=element.nameSpecie;
+                // divNameSpecie.addEventListener("click",formSpecieArea);
                 let btnVerAnimal = document.createElement("button");
                 btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
-                // btnVerAnimal.addEventListener("click",(e)=>{
-                //     listaAnimales(element.Id);
-                // });
+                btnVerAnimal.addEventListener("click",(e)=>{
+                    listaAnimales(element.Id,divContentAnimal);
+                });
                 let spanToggle = document.createElement("span");
                 spanToggle.className="visually-hidden";
                 spanToggle.textContent="Toggle Dropend";
                 let btnAnimal = document.createElement("button");
                 btnAnimal.className="btn btn-secondary dropdown-toggle-split";
                 btnAnimal.addEventListener("click",(e)=>{
-                    formAnimal();
+                    formAnimal(e);
                     enums.idEspecies = element.Id;
                 });
                 let spanVer = document.createElement("span");
                 spanVer.textContent="+";
 
-                section.insertAdjacentElement("beforeend",divSpecie);
-                divSpecie.insertAdjacentElement("beforeend",btnSpecies);
+                divContentSpecie.insertAdjacentElement("beforeend",divSpecie);
+                divSpecie.insertAdjacentElement("beforeend",divNameSpecie);
                 divSpecie.insertAdjacentElement("beforeend",btnAnimal);
                 btnAnimal.insertAdjacentElement("beforeend",spanVer);
                 divSpecie.insertAdjacentElement("beforeend",btnVerAnimal);
@@ -227,9 +241,8 @@ function listaSpecie(id) {
         });
     }
 }
-function formAnimal() {
+function formAnimal(e) {
     enums.inicioForm = "formAnimal";
-
     let sectForm = document.getElementById("sectForm");
     sectForm.className="sect-form";
     let titleForm = document.getElementById("titleForm");
@@ -258,6 +271,56 @@ function formAnimal() {
     divInputArea.insertAdjacentElement("beforeend",labelArea);
 
     formulario.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaAnimales(id,divContentAnimal) {
+
+    arrayAnimal = JSON.parse(localStorage.getItem("Animales"));
+    let sectForm = document.getElementById("sectForm");
+    sectForm.className="d-none";
+    if (arrayAnimal === null) {
+        arrayAnimal = [];
+    }
+    else{
+        divContentAnimal.innerHTML="";
+        let titleAnimales = document.createElement("h2");
+        titleAnimales.textContent="Animales";
+        titleAnimales.className="whiteColorTitles text-center";
+        divContentAnimal.insertAdjacentElement("beforeend",titleAnimales);
+
+        arrayAnimal.forEach(element => {
+            if(id === element.idEspecies){                
+                let divAnimal = document.createElement("div");
+                divAnimal.className="btn-group dropend btnSpecies separadoBtn";
+                let divNameAnimal = document.createElement("div");
+                divNameAnimal.className="divNameSpecie btnSpecies";
+                divNameAnimal.textContent=element.nameAnimal;
+                // divNameAnimal.addEventListener("click",formSpecieArea);
+                let btnVerComentario = document.createElement("button");
+                btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
+                // btnVerComentario.addEventListener("click",(e)=>{
+                //     listaAnimales(element.Id);
+                // });
+                let spanToggle = document.createElement("span");
+                spanToggle.className="visually-hidden";
+                spanToggle.textContent="Toggle Dropend";
+                let btnComentario = document.createElement("button");
+                btnComentario.className="btn btn-secondary dropdown-toggle-split";
+                // btnComentario.addEventListener("click",(e)=>{
+                //     formAnimal(e);
+                //     enums.idEspecies = element.Id;
+                // });
+                let spanVer = document.createElement("span");
+                spanVer.textContent="+";
+
+                divContentAnimal.insertAdjacentElement("beforeend",divAnimal);
+                divAnimal.insertAdjacentElement("beforeend",divNameAnimal);
+                divAnimal.insertAdjacentElement("beforeend",btnComentario);
+                btnComentario.insertAdjacentElement("beforeend",spanVer);
+                divAnimal.insertAdjacentElement("beforeend",btnVerComentario);
+                btnVerComentario.insertAdjacentElement("beforeend",spanToggle);
+            }
+        });
+    }
 }
 function signOut(){
     window.location.reload();
