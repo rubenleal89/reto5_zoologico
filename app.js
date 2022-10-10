@@ -1,9 +1,9 @@
 let enums = {
     inicioForm : "",
     idZonas : "",
-    idEspecies : ""
+    idEspecies : "",
+    idAnimals : ""
 }
-
 let arrayMenssage = [];
 let arrayAreas = [];
 let arraySpecie = [];
@@ -27,6 +27,12 @@ function idAnimales(){
     localStorage.setItem("idAnimales", JSON.stringify(newId));
     return newId;
 }
+function idComments() {
+    let lastId = localStorage.getItem("idComments") || "-1";
+    let newId = JSON.parse(lastId) + 1;
+    localStorage.setItem("idComments", JSON.stringify(newId));
+    return newId;
+}
 function eventsItems(){
     let area = document.getElementById("newArea");
     let message = document.getElementById("newMessage");
@@ -47,7 +53,6 @@ function formComment(){
     let titleForm = document.getElementById("titleForm");
     titleForm.textContent="Create Message"
 
-    // let formulario = document.getElementById("formulario");
     formulario.innerHTML="";
 
     let divInputName = document.createElement("div");
@@ -85,6 +90,60 @@ function formComment(){
     divInputMessage.insertAdjacentElement("beforeend",labelMessage);
 
     formulario.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaComment(id) {
+    let section = document.getElementById("verComentarios");
+    section.className="verComentarios";
+    section.innerHTML="";
+    arrayMenssage = JSON.parse(localStorage.getItem("Comentarios"));
+
+    if (arrayMenssage === null) {
+        arrayMenssage=[];
+    }
+    else{
+        arrayMenssage.forEach(element => {
+            if(id === element.IdAnimals){
+                let divContents = document.createElement("div");
+                divContents.className="toast fade show";
+                let divNameUser = document.createElement("div");
+                divNameUser.className="toast-header";
+                let iconMess = document.createElement("i");
+                iconMess.className="fa-solid fa-message";
+                let nameUser = document.createElement("strong");
+                nameUser.className="me-auto";
+                nameUser.textContent=element.nameUser;
+                let btnClose = document.createElement("button");
+                btnClose.className="btn-close";
+
+                let divComment = document.createElement("div");
+                divComment.className="toast-body";
+                let txtComment = document.createElement("p");
+                txtComment.textContent=element.comment;
+                let divRespuesta = document.createElement("div");
+                divRespuesta.className="btn-group";
+                let btnResponder = document.createElement("button");
+                btnResponder.className="btn btn-sm btn-secondary";
+                btnResponder.textContent="Responder";
+                let btnVerRespuestas = document.createElement("button");
+                btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
+                let spanFlecha = document.createElement("span");
+                spanFlecha.className="visually-hidden";
+                spanFlecha.textContent="Toggle Dropdown";
+                
+                section.insertAdjacentElement("beforeend",divContents);
+                divContents.insertAdjacentElement("beforeend",divNameUser);
+                divNameUser.insertAdjacentElement("beforeend",iconMess);
+                divNameUser.insertAdjacentElement("beforeend",nameUser);
+                divNameUser.insertAdjacentElement("beforeend",btnClose);
+                divContents.insertAdjacentElement("beforeend",divComment);
+                divComment.insertAdjacentElement("beforeend",txtComment);
+                divComment.insertAdjacentElement("beforeend",divRespuesta);
+                divRespuesta.insertAdjacentElement("beforeend",btnResponder);
+                divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
+                divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
+            }
+        });
+    }
 }
 function formArea(){
     enums.inicioForm = "formArea";
@@ -132,7 +191,7 @@ function selectArea() {
             let divSpecie = document.createElement("li");
             divSpecie.className="btn-group dropend separadoBtn";
             let btnArea = document.createElement("button");
-            btnArea.className="btn btn-secondary";
+            btnArea.className="btn btn-secondary NameSpecie";
             btnArea.textContent=element.nameArea;
             btnArea.addEventListener("click",(e)=>{
                 formSpecieArea(e)
@@ -213,9 +272,8 @@ function listaSpecie(id) {
                 let divNameSpecie = document.createElement("div");
                 divNameSpecie.className="divNameSpecie btnSpecies";
                 divNameSpecie.textContent=element.nameSpecie;
-                // divNameSpecie.addEventListener("click",formSpecieArea);
                 let btnVerAnimal = document.createElement("button");
-                btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
+                btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split addSee";
                 btnVerAnimal.addEventListener("click",(e)=>{
                     listaAnimales(element.Id,divContentAnimal);
                 });
@@ -223,18 +281,16 @@ function listaSpecie(id) {
                 spanToggle.className="visually-hidden";
                 spanToggle.textContent="Toggle Dropend";
                 let btnAnimal = document.createElement("button");
-                btnAnimal.className="btn btn-secondary dropdown-toggle-split";
+                btnAnimal.className="btn btn-secondary dropdown-toggle-split addSee";
+                btnAnimal.textContent="+";
                 btnAnimal.addEventListener("click",(e)=>{
                     formAnimal(e);
                     enums.idEspecies = element.Id;
                 });
-                let spanVer = document.createElement("span");
-                spanVer.textContent="+";
 
                 divContentSpecie.insertAdjacentElement("beforeend",divSpecie);
                 divSpecie.insertAdjacentElement("beforeend",divNameSpecie);
                 divSpecie.insertAdjacentElement("beforeend",btnAnimal);
-                btnAnimal.insertAdjacentElement("beforeend",spanVer);
                 divSpecie.insertAdjacentElement("beforeend",btnVerAnimal);
                 btnVerAnimal.insertAdjacentElement("beforeend",spanToggle);
             }
@@ -246,7 +302,7 @@ function formAnimal(e) {
     let sectForm = document.getElementById("sectForm");
     sectForm.className="sect-form";
     let titleForm = document.getElementById("titleForm");
-    titleForm.textContent="Create Animal"
+    titleForm.textContent=`Create animals for the ${e.target.parentNode.childNodes[0].textContent} species`
 
     formulario.innerHTML="";
 
@@ -294,28 +350,25 @@ function listaAnimales(id,divContentAnimal) {
                 let divNameAnimal = document.createElement("div");
                 divNameAnimal.className="divNameSpecie btnSpecies";
                 divNameAnimal.textContent=element.nameAnimal;
-                // divNameAnimal.addEventListener("click",formSpecieArea);
                 let btnVerComentario = document.createElement("button");
                 btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
-                // btnVerComentario.addEventListener("click",(e)=>{
-                //     listaAnimales(element.Id);
-                // });
+                btnVerComentario.addEventListener("click",(e)=>{
+                    listaComment(element.Id);
+                });
                 let spanToggle = document.createElement("span");
                 spanToggle.className="visually-hidden";
                 spanToggle.textContent="Toggle Dropend";
                 let btnComentario = document.createElement("button");
                 btnComentario.className="btn btn-secondary dropdown-toggle-split";
-                // btnComentario.addEventListener("click",(e)=>{
-                //     formAnimal(e);
-                //     enums.idEspecies = element.Id;
-                // });
-                let spanVer = document.createElement("span");
-                spanVer.textContent="+";
+                btnComentario.textContent="-"
+                btnComentario.addEventListener("click",(e)=>{
+                    formComment();
+                    enums.idAnimals = element.Id;
+                });
 
                 divContentAnimal.insertAdjacentElement("beforeend",divAnimal);
                 divAnimal.insertAdjacentElement("beforeend",divNameAnimal);
                 divAnimal.insertAdjacentElement("beforeend",btnComentario);
-                btnComentario.insertAdjacentElement("beforeend",spanVer);
                 divAnimal.insertAdjacentElement("beforeend",btnVerComentario);
                 btnVerComentario.insertAdjacentElement("beforeend",spanToggle);
             }
@@ -335,6 +388,8 @@ function envio(e){
         let inputName = document.getElementById("floatingInput").value;
         let inputTextarea = document.getElementById("floatingTextarea").value;
         let submit = {
+            IdAnimals: enums.idAnimals,
+            Id : idComments(),
             nameUser : inputName,
             comment : inputTextarea
         }
