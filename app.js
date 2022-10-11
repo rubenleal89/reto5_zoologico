@@ -37,16 +37,31 @@ function idComments() {
 }
 function eventsItems(){
     let area = document.getElementById("newArea");
-    let message = document.getElementById("newMessage");
     let close = document.getElementById("signOut");
-
     area.addEventListener("click",formArea);
-    message.addEventListener("click",formComment);
     close.addEventListener("click",signOut)
-
+    dataLocalStorage();
     selectArea();
 }
-
+function dataLocalStorage() {
+    arraySpecie = JSON.parse(localStorage.getItem("Especies"));
+    arrayAnimal = JSON.parse(localStorage.getItem("Animales"));
+    arrayMenssage = JSON.parse(localStorage.getItem("Comentarios"));
+    arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
+    if (arraySpecie === null) {
+        arraySpecie=[];
+    }
+    if (arrayAnimal === null) {
+        arrayAnimal=[];
+    }
+    if (arrayMenssage === null) {
+        arrayMenssage=[];
+    }
+    if (arrayRespuestas === null) {
+        arrayRespuestas=[];
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////////////
 function formComment(){
     enums.inicioForm = "formComment";
 
@@ -280,13 +295,6 @@ function selectArea() {
             btnSpecies.insertAdjacentElement("beforeend",spanToggle);
 
         });
-
-        // let newSpecies = document.getElementById("floatingSelect");
-        // newSpecies.addEventListener("change",(e)=>{
-        // if (e.target.value === "addSpecies") {
-        //     formSpecieArea();
-        //     }
-        // });
     }
 }
 function formSpecieArea(e) {
@@ -505,22 +513,12 @@ function envio(e,nameUserResp,resCommnet,idResComment){
         formulario.reset();
     }
     if (enums.inicioForm === "formResponder"){
-        arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
-        if(arrayRespuestas === null){
-            arrayRespuestas = [{
-                IdComment : idResComment,
-                nameUser : nameUserResp.value,
-                comment : resCommnet.value
-            }];
+        let submit = {
+            IdComment : idResComment,
+            nameUser : nameUserResp.value,
+            comment : resCommnet.value
         }
-        else{
-            let submit = {
-                IdComment : idResComment,
-                nameUser : nameUserResp.value,
-                comment : resCommnet.value
-            }
-            arrayRespuestas.push(submit);
-        }
+        arrayRespuestas.push(submit);
         localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
         e.target.reset();
     }
