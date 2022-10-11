@@ -128,18 +128,19 @@ function listaComment(id) {
                 btnResponder.className="btn btn-sm btn-secondary";
                 btnResponder.textContent="Responder";
                 btnResponder.addEventListener("click",(e)=>{
-                    formResponder(divForm,element.Id);
+                    formResponder(divForm,element.Id,divRespComment);
                     enums.idComments = element.id;
                 })
                 let btnVerRespuestas = document.createElement("button");
                 btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
                 btnVerRespuestas.addEventListener("click",(e)=>{
-                    listaRespuestas(element.Id);
+                    listaRespuestas(element.Id,divRespComment,divForm);
                 })
                 let spanFlecha = document.createElement("span");
                 spanFlecha.className="visually-hidden";
                 spanFlecha.textContent="Toggle Dropdown";
                 let divForm = document.createElement("div");
+                let divRespComment = document.createElement("div");
                 
                 section.insertAdjacentElement("beforeend",divContents);
                 divContents.insertAdjacentElement("beforeend",divNameUser);
@@ -153,12 +154,15 @@ function listaComment(id) {
                 divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
                 divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
                 divComment.insertAdjacentElement("beforeend",divForm);
+                divComment.insertAdjacentElement("beforeend",divRespComment);
             }
         });
     }
 }
-function formResponder(divForm,idComments) {
+function formResponder(divForm,idComments,divRespComment) {
     divForm.innerHTML = "";
+    divForm.className="divFormResp";
+    divRespComment.className="d-none";
     enums.inicioForm = "formResponder";
     let formulario = document.createElement("form");
     formulario.className="formRespuesta";
@@ -181,13 +185,30 @@ function formResponder(divForm,idComments) {
     formulario.insertAdjacentElement("beforeend",respuesta);
     formulario.insertAdjacentElement("beforeend",btnSubmit);
 }
-function listaRespuestas(idComments) {
+function listaRespuestas(id,divRespComment,divForm) {
     arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
+    divRespComment.innerHTML="";
+    divRespComment.className="divVerRespuestas";
+    divForm.className="d-none";
     if(arrayRespuestas === null){
         arrayRespuestas = [];
     }
     else{
-        console.log("Si se hizo");
+        arrayRespuestas.forEach(element => {
+            if (id === element.IdComment) {
+                divRespComment.innerHTML +=`
+                <div class="toast fade show divRespuestas">
+                    <div class="toast-header">
+                        <strong class="me-auto">${element.nameUser}</strong>
+                        <button class="btn-close"></button>
+                    </div>
+                    <div class="toast-body" id="divComment">
+                        <p>${element.comment}</p>
+                    </div>
+                </div>
+                `;
+            }
+        });
     }
 }
 function formArea(){
@@ -227,6 +248,7 @@ function formArea(){
 }
 function selectArea() {
     arrayAreas = JSON.parse(localStorage.getItem("Areas Zoologico"));
+    let sectComment = document.getElementById("verComentarios");
     if (arrayAreas === null) {
         arrayAreas = [];
     }else{
@@ -246,6 +268,7 @@ function selectArea() {
             btnSpecies.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
             btnSpecies.addEventListener("click",(e)=>{
                 listaSpecie(element.Id);
+                sectComment.className="d-none";
             });
             let spanToggle = document.createElement("span");
             spanToggle.className="visually-hidden";
@@ -344,6 +367,9 @@ function listaSpecie(id) {
 }
 function formAnimal(e) {
     enums.inicioForm = "formAnimal";
+
+    let sectRespComment = document.getElementById("verComentarios");
+    sectRespComment.className="d-none";
     let sectForm = document.getElementById("sectForm");
     sectForm.className="sect-form";
     let titleForm = document.getElementById("titleForm");
@@ -497,7 +523,6 @@ function envio(e,nameUserResp,resCommnet,idResComment){
         }
         localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
         e.target.reset();
-        // listaRespuestas(idResComment);
     }
 }
 
