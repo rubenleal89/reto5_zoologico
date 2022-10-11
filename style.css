@@ -131,16 +131,31 @@ main{
 
 /* Comentarios */
 
-.verComentarios{
-    min-height: 55vh;
-    background-color: #212529;
-}
-
 .verComentarios .toast{
-    --bs-toast-bg: gray;
+    --bs-toast-bg: #212529;
 	--bs-toast-max-width: 100%;
+    --bs-toast-color: white;
 }
 
 .verComentarios .toast:not(.show) {
     display: block;
+}
+
+/* Formulario Respuestas */
+
+.formRespuesta{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+
+.formRespuesta .nameUser{
+    width: 30%;
+}
+
+.formRespuesta .inpuntRespuesta{
+    width: 70%;
+    resize: none;
+    margin: 5px 0;
 }

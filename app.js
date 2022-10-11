@@ -2,12 +2,14 @@ let enums = {
     inicioForm : "",
     idZonas : "",
     idEspecies : "",
-    idAnimals : ""
+    idAnimals : "",
+    idComments : ""
 }
 let arrayMenssage = [];
 let arrayAreas = [];
 let arraySpecie = [];
 let arrayAnimal = [];
+let arrayRespuestas = [];
 
 function idZonas(){
     let lastId = localStorage.getItem("idZonas") || "-1";
@@ -117,6 +119,7 @@ function listaComment(id) {
 
                 let divComment = document.createElement("div");
                 divComment.className="toast-body";
+                divComment.id="divComment";
                 let txtComment = document.createElement("p");
                 txtComment.textContent=element.comment;
                 let divRespuesta = document.createElement("div");
@@ -124,11 +127,19 @@ function listaComment(id) {
                 let btnResponder = document.createElement("button");
                 btnResponder.className="btn btn-sm btn-secondary";
                 btnResponder.textContent="Responder";
+                btnResponder.addEventListener("click",(e)=>{
+                    formResponder(divForm,element.Id);
+                    enums.idComments = element.id;
+                })
                 let btnVerRespuestas = document.createElement("button");
                 btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
+                btnVerRespuestas.addEventListener("click",(e)=>{
+                    listaRespuestas(element.Id);
+                })
                 let spanFlecha = document.createElement("span");
                 spanFlecha.className="visually-hidden";
                 spanFlecha.textContent="Toggle Dropdown";
+                let divForm = document.createElement("div");
                 
                 section.insertAdjacentElement("beforeend",divContents);
                 divContents.insertAdjacentElement("beforeend",divNameUser);
@@ -141,8 +152,42 @@ function listaComment(id) {
                 divRespuesta.insertAdjacentElement("beforeend",btnResponder);
                 divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
                 divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
+                divComment.insertAdjacentElement("beforeend",divForm);
             }
         });
+    }
+}
+function formResponder(divForm,idComments) {
+    divForm.innerHTML = "";
+    enums.inicioForm = "formResponder";
+    let formulario = document.createElement("form");
+    formulario.className="formRespuesta";
+    formulario.addEventListener("submit",(e)=>{
+        envio(e,nameUser,respuesta,idComments);
+    });
+    let nameUser = document.createElement("input");
+    nameUser.type="text";
+    nameUser.className="form-control form-control-sm nameUser";
+    nameUser.placeholder="Nombre Usuario";
+    let respuesta = document.createElement("textarea");
+    respuesta.className="form-control form-control-sm inpuntRespuesta";
+    respuesta.placeholder="Responder Commentario";
+    let btnSubmit = document.createElement("button");
+    btnSubmit.textContent="Enviar";
+    btnSubmit.className="btn btn-primary btn-sm";
+
+    divForm.insertAdjacentElement("beforeend",formulario);
+    formulario.insertAdjacentElement("beforeend",nameUser);
+    formulario.insertAdjacentElement("beforeend",respuesta);
+    formulario.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaRespuestas(idComments) {
+    arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
+    if(arrayRespuestas === null){
+        arrayRespuestas = [];
+    }
+    else{
+        console.log("Si se hizo");
     }
 }
 function formArea(){
@@ -329,7 +374,6 @@ function formAnimal(e) {
     formulario.insertAdjacentElement("beforeend",btnSubmit);
 }
 function listaAnimales(id,divContentAnimal) {
-
     arrayAnimal = JSON.parse(localStorage.getItem("Animales"));
     let sectForm = document.getElementById("sectForm");
     sectForm.className="d-none";
@@ -341,6 +385,8 @@ function listaAnimales(id,divContentAnimal) {
         let titleAnimales = document.createElement("h2");
         titleAnimales.textContent="Animales";
         titleAnimales.className="whiteColorTitles text-center";
+        let sectForm = document.getElementById("sectForm");
+        let sectComment = document.getElementById("verComentarios");
         divContentAnimal.insertAdjacentElement("beforeend",titleAnimales);
 
         arrayAnimal.forEach(element => {
@@ -353,6 +399,7 @@ function listaAnimales(id,divContentAnimal) {
                 let btnVerComentario = document.createElement("button");
                 btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
                 btnVerComentario.addEventListener("click",(e)=>{
+                    sectForm.className="d-none";
                     listaComment(element.Id);
                 });
                 let spanToggle = document.createElement("span");
@@ -360,8 +407,9 @@ function listaAnimales(id,divContentAnimal) {
                 spanToggle.textContent="Toggle Dropend";
                 let btnComentario = document.createElement("button");
                 btnComentario.className="btn btn-secondary dropdown-toggle-split";
-                btnComentario.textContent="-"
+                btnComentario.textContent="+";
                 btnComentario.addEventListener("click",(e)=>{
+                    sectComment.className="d-none";
                     formComment();
                     enums.idAnimals = element.Id;
                 });
@@ -382,7 +430,7 @@ function signOut(){
 let formulario = document.getElementById("formulario");
 formulario.addEventListener("submit",envio);
 
-function envio(e){
+function envio(e,nameUserResp,resCommnet,idResComment){
     e.preventDefault();
     if (enums.inicioForm === "formComment") {
         let inputName = document.getElementById("floatingInput").value;
@@ -429,6 +477,27 @@ function envio(e){
         arrayAnimal.push(submit);
         localStorage.setItem("Animales",JSON.stringify(arrayAnimal));
         formulario.reset();
+    }
+    if (enums.inicioForm === "formResponder"){
+        arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
+        if(arrayRespuestas === null){
+            arrayRespuestas = [{
+                IdComment : idResComment,
+                nameUser : nameUserResp.value,
+                comment : resCommnet.value
+            }];
+        }
+        else{
+            let submit = {
+                IdComment : idResComment,
+                nameUser : nameUserResp.value,
+                comment : resCommnet.value
+            }
+            arrayRespuestas.push(submit);
+        }
+        localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
+        e.target.reset();
+        // listaRespuestas(idResComment);
     }
 }
 
