@@ -3,7 +3,8 @@ let enums = {
     idZonas : "",
     idEspecies : "",
     idAnimals : "",
-    idComments : ""
+    idComments : "",
+    validarElement : ""
 }
 let arrayMenssage = [];
 let arrayAreas = [];
@@ -129,8 +130,7 @@ function listaComment(id) {
                 let nameUser = document.createElement("strong");
                 nameUser.className="me-auto";
                 nameUser.textContent=element.nameUser;
-                let btnClose = document.createElement("button");
-                btnClose.className="btn-close";
+
 
                 let divComment = document.createElement("div");
                 divComment.className="toast-body";
@@ -161,7 +161,6 @@ function listaComment(id) {
                 divContents.insertAdjacentElement("beforeend",divNameUser);
                 divNameUser.insertAdjacentElement("beforeend",iconMess);
                 divNameUser.insertAdjacentElement("beforeend",nameUser);
-                divNameUser.insertAdjacentElement("beforeend",btnClose);
                 divContents.insertAdjacentElement("beforeend",divComment);
                 divComment.insertAdjacentElement("beforeend",txtComment);
                 divComment.insertAdjacentElement("beforeend",divRespuesta);
@@ -215,7 +214,6 @@ function listaRespuestas(id,divRespComment,divForm) {
                 <div class="toast fade show divRespuestas">
                     <div class="toast-header">
                         <strong class="me-auto">${element.nameUser}</strong>
-                        <button class="btn-close"></button>
                     </div>
                     <div class="toast-body" id="divComment">
                         <p>${element.comment}</p>
@@ -231,6 +229,8 @@ function formArea(){
 
     let sectionEspe = document.getElementById("sectVerEspecies");
     sectionEspe.className="d-none";
+    sectionComment = document.getElementById("verComentarios");
+    sectionComment.className="d-none";
 
     let sectForm = document.getElementById("sectForm");
     sectForm.className="sect-form";
@@ -274,7 +274,7 @@ function selectArea() {
             divSpecie.className="btn-group dropend separadoBtn";
             let btnArea = document.createElement("button");
             btnArea.className="btn btn-secondary NameSpecie";
-            btnArea.textContent=element.nameArea;
+            btnArea.textContent=element.name;
             btnArea.addEventListener("click",(e)=>{
                 formSpecieArea(e)
                 enums.idZonas = element.Id;
@@ -347,7 +347,7 @@ function listaSpecie(id) {
                 divSpecie.className="btn-group dropend btnSpecies separadoBtn";
                 let divNameSpecie = document.createElement("div");
                 divNameSpecie.className="divNameSpecie btnSpecies";
-                divNameSpecie.textContent=element.nameSpecie;
+                divNameSpecie.textContent=element.name;
                 let btnVerAnimal = document.createElement("button");
                 btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split addSee";
                 btnVerAnimal.addEventListener("click",(e)=>{
@@ -429,7 +429,7 @@ function listaAnimales(id,divContentAnimal) {
                 divAnimal.className="btn-group dropend btnSpecies separadoBtn";
                 let divNameAnimal = document.createElement("div");
                 divNameAnimal.className="divNameSpecie btnSpecies";
-                divNameAnimal.textContent=element.nameAnimal;
+                divNameAnimal.textContent=element.name;
                 let btnVerComentario = document.createElement("button");
                 btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
                 btnVerComentario.addEventListener("click",(e)=>{
@@ -461,67 +461,116 @@ function signOut(){
     window.location.reload();
     console.log("salir");
 }
+let formSearch = document.getElementById("forSearch");
+formSearch.addEventListener("submit",search);
+function search(e) {
+    e.preventDefault();
+    let buscador = document.getElementById("inputSearch").value.toLowerCase();
+    
+}
+
 let formulario = document.getElementById("formulario");
 formulario.addEventListener("submit",envio);
 
 function envio(e,nameUserResp,resCommnet,idResComment){
     e.preventDefault();
     if (enums.inicioForm === "formComment") {
-        let inputName = document.getElementById("floatingInput").value;
-        let inputTextarea = document.getElementById("floatingTextarea").value;
-        let submit = {
-            IdAnimals: enums.idAnimals,
-            Id : idComments(),
-            nameUser : inputName,
-            comment : inputTextarea
+        let inputName = document.getElementById("floatingInput").value.toLowerCase();
+        let inputTextarea = document.getElementById("floatingTextarea").value.toLowerCase();
+        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName) && /\S/.test(inputTextarea)){
+            let submit = {
+                IdAnimals: enums.idAnimals,
+                Id : idComments(),
+                nameUser : inputName,
+                comment : inputTextarea
+            }
+            arrayMenssage.push(submit);
+            localStorage.setItem("Comentarios",JSON.stringify(arrayMenssage));
+            formulario.reset();
         }
-        arrayMenssage.push(submit);
-        localStorage.setItem("Comentarios",JSON.stringify(arrayMenssage));
-        formulario.reset();
+        else{
+            alert("¡ERROR! El nombre del usuario solo debe contener letras y el comentario no se puede enviar en blanco")
+        }
     }
     if (enums.inicioForm === "formArea") {
-        let inputNameArea = document.getElementById("floatingInput").value; 
-        let submit = {
-            Id : idZonas(),
-            nameArea : inputNameArea
+        let inputNameArea = document.getElementById("floatingInput").value.toLowerCase();
+        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameArea)){
+            validarData(inputNameArea,arrayAreas);
+            if(enums.validarElement === false){
+                let submit = {
+                    Id : idZonas(),
+                    name : inputNameArea
+                }
+                arrayAreas.push(submit);
+                localStorage.setItem("Areas Zoologico",JSON.stringify(arrayAreas));
+                selectArea();
+                formulario.reset();
+            }else{alert(`El area ${inputNameArea} ya existe`)}
         }
-        arrayAreas.push(submit);
-        localStorage.setItem("Areas Zoologico",JSON.stringify(arrayAreas));
-        selectArea();
-        formulario.reset();
+        else{
+            alert("¡ERROR! el nombre del area debe contener solo letras")
+        }
     }
     if (enums.inicioForm === "formSpecie") {
-        let inputNameSpecie = document.getElementById("floatingInput").value; 
-        let submit = {
-            idZonas : enums.idZonas,
-            Id : idEspecies(),
-            nameSpecie : inputNameSpecie
+        let inputNameSpecie = document.getElementById("floatingInput").value.toLowerCase();
+        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameSpecie)){
+            validarData(inputNameSpecie,arraySpecie);
+            if(enums.validarElement === false){
+                let submit = {
+                    idZonas : enums.idZonas,
+                    Id : idEspecies(),
+                    name : inputNameSpecie
+                }
+                arraySpecie.push(submit)
+                localStorage.setItem("Especies",JSON.stringify(arraySpecie));
+                formulario.reset();
+            }else{alert(`La especie ${inputNameSpecie} ya existe`)}
         }
-        arraySpecie.push(submit)
-        localStorage.setItem("Especies",JSON.stringify(arraySpecie));
-        formulario.reset();
+        else{
+            alert("¡ERROR! el nombre de la especie debe contener solo letras");
+        }
     }
     if (enums.inicioForm === "formAnimal") {
-        let inputNameAnimal = document.getElementById("floatingInput").value; 
-        let submit = {
-            idEspecies : enums.idEspecies,
-            Id : idAnimales(),
-            nameAnimal : inputNameAnimal
+        let inputNameAnimal = document.getElementById("floatingInput").value.toLowerCase();
+        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameAnimal)){
+            validarData(inputNameAnimal,arrayAnimal);
+            if(enums.validarElement === false){
+                let submit = {
+                    idEspecies : enums.idEspecies,
+                    Id : idAnimales(),
+                    name : inputNameAnimal
+                }
+                arrayAnimal.push(submit);
+                localStorage.setItem("Animales",JSON.stringify(arrayAnimal));
+                formulario.reset();
+            }else{alert(`El animal ${inputNameAnimal} ya existe`)}
         }
-        arrayAnimal.push(submit);
-        localStorage.setItem("Animales",JSON.stringify(arrayAnimal));
-        formulario.reset();
+        else{
+            alert("¡ERROR! el nombre del animal debe contener solo letras")
+        }
     }
     if (enums.inicioForm === "formResponder"){
-        let submit = {
-            IdComment : idResComment,
-            nameUser : nameUserResp.value,
-            comment : resCommnet.value
+        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(nameUserResp.value) && /\S/.test(resCommnet.value)){
+            let submit = { // Valores del Objetos son pasados por parametros
+                IdComment : idResComment,
+                nameUser : nameUserResp.value.toLowerCase(),
+                comment : resCommnet.value.toLowerCase()
+            }
+            arrayRespuestas.push(submit);
+            localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
+            e.target.reset();
         }
-        arrayRespuestas.push(submit);
-        localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
-        e.target.reset();
+        else{
+            alert("Solo se aceptan letras")
+        }
     }
+}
+function validarData(inputValue,arrayValidar) {
+    let array = [];
+    arrayValidar.forEach(element => {
+        array.push(element.name);
+    });
+    enums.validarElement = array.includes(inputValue);
 }
 
 document.addEventListener("DOMContentLoaded",eventsItems);
