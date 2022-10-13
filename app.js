@@ -514,27 +514,6 @@ function search(e) {
       </div>
         `;
     }
-    // arrayAreas.forEach(element => {
-    //     if (element.name === buscador) {
-    //         console.log(`Imprimir ${element.name}`);
-    //     }
-    //     else{
-    //         console.log(element.name);
-    //         arraySpecie.forEach(element => {
-    //             if (element.name === buscador) {
-    //                 console.log(`Imprimir ${element.name}`);
-    //             }
-    //             else{
-    //                 console.log(element.name);
-    //                 arrayAnimal.forEach(element => {
-    //                     if (element.name === buscador) {
-    //                         console.log(`Imprimir ${element.name}`); 
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
 }
 function verBusqueda(buscador,sectSearch) {
     arrayAreas.forEach(element => {
