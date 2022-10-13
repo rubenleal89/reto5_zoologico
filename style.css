@@ -61,11 +61,6 @@ main{
     resize: none;
 }
 
-/* .sect-form .btn-close{
-    background-color: white;
-    border: 1px solid;
-} */
-
 .colorTxt{
     color: black;
 }
@@ -168,4 +163,24 @@ main{
 
 .verComentarios .divRespuestas{
     width: 70%;
+}
+/* Seccion del Search */
+
+.verBusqueda{
+    min-height: 100px;
+    background-color: #212529;
+    color: white;
+}
+
+.especie{
+    margin-left: 15px;
+}
+.animales{
+    margin-left: 40px;
+}
+.comentarios{
+    margin-left: 80px;
+}
+.respuestas{
+    margin-left: 160px;
 }

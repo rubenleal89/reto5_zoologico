@@ -465,8 +465,245 @@ let formSearch = document.getElementById("forSearch");
 formSearch.addEventListener("submit",search);
 function search(e) {
     e.preventDefault();
+    let sectVerEspecies = document.getElementById("sectVerEspecies");
+    sectVerEspecies.className="d-none";
+    let sectForm = document.getElementById("sectForm");
+    sectForm.className="d-none";
+    let sectVerComentarios = document.getElementById("verComentarios");
+    sectVerComentarios.className="d-none";
     let buscador = document.getElementById("inputSearch").value.toLowerCase();
-    
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="verBusqueda";
+    sectSearch.innerHTML="";
+    verBusqueda(buscador,sectSearch);
+    // arrayAreas.forEach(element => {
+    //     if (element.name === buscador) {
+    //         console.log(`Imprimir ${element.name}`);
+    //     }
+    //     else{
+    //         console.log(element.name);
+    //         arraySpecie.forEach(element => {
+    //             if (element.name === buscador) {
+    //                 console.log(`Imprimir ${element.name}`);
+    //             }
+    //             else{
+    //                 console.log(element.name);
+    //                 arrayAnimal.forEach(element => {
+    //                     if (element.name === buscador) {
+    //                         console.log(`Imprimir ${element.name}`); 
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
+    formSearch.reset();
+}
+function verBusqueda(buscador,sectSearch) {
+    arrayAreas.forEach(element => {
+        if (element.name.includes(buscador)) {
+            let title = document.createElement("h3");
+            title.textContent="Zona";
+            let verZona = document.createElement("p");
+            verZona.textContent = element.name;
+            sectSearch.insertAdjacentElement("beforeend",title);
+            sectSearch.insertAdjacentElement("beforeend",verZona);
+        }
+    });
+    arraySpecie.forEach(element => {
+        if (element.name.includes(buscador)) {
+            let titleEsp = document.createElement("h3");
+            titleEsp.textContent="Area";
+            titleEsp.className="especie";
+            let verEspecie = document.createElement("p");
+            verEspecie.textContent = element.name;
+            verEspecie.className="especie";
+            sectSearch.insertAdjacentElement("beforeend",titleEsp);
+            sectSearch.insertAdjacentElement("beforeend",verEspecie);
+            let idZona = element.idZonas;
+            arrayAreas.forEach(element => {
+                if (element.Id === idZona) {
+                    let titleArea = document.createElement("h3");
+                    titleArea.textContent="Zona";
+                    let verZona = document.createElement("p");
+                    verZona.textContent = element.name;
+                    sectSearch.insertAdjacentElement("afterbegin",verZona);
+                    sectSearch.insertAdjacentElement("afterbegin",titleArea);
+                }
+            })
+        }
+    });
+    arrayAnimal.forEach(element => {
+        let divImpri = document.createElement("div");
+        sectSearch.insertAdjacentElement("beforeend",divImpri);
+        if (element.name.includes(buscador)) {
+            let titleAni = document.createElement("h3");
+            titleAni.textContent="Animal";
+            titleAni.className="animales";
+            let verAnimal = document.createElement("p");
+            verAnimal.textContent = element.name;
+            verAnimal.className="animales";
+            divImpri.insertAdjacentElement("beforeend",titleAni);
+            divImpri.insertAdjacentElement("beforeend",verAnimal);
+            let idEspecie = element.idEspecies;
+            arraySpecie.forEach(element => {
+                if (element.Id === idEspecie) {
+                    let titleEsp = document.createElement("h3");
+                    titleEsp.textContent="Especie";
+                    titleEsp.className="especie";
+                    let verEspecie = document.createElement("p");
+                    verEspecie.textContent = element.name;
+                    verEspecie.className="especie";
+                    divImpri.insertAdjacentElement("afterbegin",verEspecie);
+                    divImpri.insertAdjacentElement("afterbegin",titleEsp);
+                    let idZona = element.idZonas;
+                    arrayAreas.forEach(element => {
+                        if (element.Id === idZona) {
+                            let titleArea = document.createElement("h3");
+                            titleArea.textContent="Area";
+                            let verZona = document.createElement("p");
+                            verZona.textContent = element.name;
+                            divImpri.insertAdjacentElement("afterbegin",verZona);
+                            divImpri.insertAdjacentElement("afterbegin",titleArea);
+                        }
+                })
+                }
+            });
+        }
+    });
+    arrayMenssage.forEach(element => {
+        let divImpri = document.createElement("div");
+        sectSearch.insertAdjacentElement("beforeend",divImpri);
+        if (element.nameUser.includes(buscador) || element.comment.includes(buscador)) {
+            let titleComment = document.createElement("h3");
+            titleComment.textContent="Comentario";
+            titleComment.className="comentarios";
+            let verNameUser = document.createElement("p");
+            verNameUser.textContent = `User: ${element.nameUser}`;
+            verNameUser.className="comentarios";
+            let verComment = document.createElement("p");
+            verComment.textContent = `Comment: ${element.comment}`;
+            verComment.className="comentarios";
+            divImpri.insertAdjacentElement("beforeend",titleComment);
+            divImpri.insertAdjacentElement("beforeend",verNameUser);
+            divImpri.insertAdjacentElement("beforeend",verComment);
+            let idAnimal = element.IdAnimals
+            arrayAnimal.forEach(element => {
+                if (element.Id === idAnimal) {
+                    let titleAni = document.createElement("h3");
+                    titleAni.textContent="Animal";
+                    titleAni.className="animales";
+                    let verAnimal = document.createElement("p");
+                    verAnimal.textContent = element.name;
+                    verAnimal.className="animales";
+                    divImpri.insertAdjacentElement("afterbegin",verAnimal);
+                    divImpri.insertAdjacentElement("afterbegin",titleAni);
+                    let idEspecie = element.idEspecies;
+                    arraySpecie.forEach(element => {
+                        if (element.Id === idEspecie) {
+                            let titleEsp = document.createElement("h3");
+                            titleEsp.textContent="Especie";
+                            titleEsp.className="especie";
+                            let verEspecie = document.createElement("p");
+                            verEspecie.textContent = element.name;
+                            verEspecie.className="especie";
+                            divImpri.insertAdjacentElement("afterbegin",verEspecie);
+                            divImpri.insertAdjacentElement("afterbegin",titleEsp);
+                            let idZona = element.idZonas;
+                            arrayAreas.forEach(element => {
+                                if (element.Id === idZona) {
+                                    let titleArea = document.createElement("h3");
+                                    titleArea.textContent="Zona";
+                                    let verZona = document.createElement("p");
+                                    verZona.textContent = element.name;
+                                    divImpri.insertAdjacentElement("afterbegin",verZona);
+                                    divImpri.insertAdjacentElement("afterbegin",titleArea);
+                                }
+                        })
+                        }
+                    });
+                }
+            });
+        }
+    });
+    arrayRespuestas.forEach(element => {
+        let divImpri = document.createElement("div");
+        sectSearch.insertAdjacentElement("beforeend",divImpri);
+        if (element.nameUser.includes(buscador) || element.comment.includes(buscador)) {
+            let titleResp = document.createElement("h3");
+            titleResp.textContent="Respuesta";
+            titleResp.className="respuestas";
+            let verNameUser = document.createElement("p");
+            verNameUser.textContent = `User: ${element.nameUser}`;
+            verNameUser.className="respuestas";
+            let verResp = document.createElement("p");
+            verResp.textContent = `Respuesta: ${element.comment}`;
+            verResp.className="respuestas";
+            divImpri.insertAdjacentElement("beforeend",titleResp);
+            divImpri.insertAdjacentElement("beforeend",verNameUser);
+            divImpri.insertAdjacentElement("beforeend",verResp);
+            let idComment = element.IdComment;
+            arrayMenssage.forEach(element => {
+                if (element.Id === idComment) {
+                    let titleComment = document.createElement("h3");
+                    titleComment.textContent="Comentario";
+                    titleComment.className="comentarios";
+                    let verNameUser = document.createElement("p");
+                    verNameUser.textContent = `User: ${element.nameUser}`;
+                    verNameUser.className="comentarios";
+                    let verComment = document.createElement("p");
+                    verComment.textContent = `Comment: ${element.comment}`;
+                    verComment.className="comentarios";
+                    divImpri.insertAdjacentElement("afterbegin",verComment);
+                    divImpri.insertAdjacentElement("afterbegin",verNameUser);
+                    divImpri.insertAdjacentElement("afterbegin",titleComment);
+                    let idAnimal = element.IdAnimals
+                    arrayAnimal.forEach(element => {
+                        if (element.Id === idAnimal) {
+                            let titleAni = document.createElement("h3");
+                            titleAni.textContent="Animal";
+                            titleAni.className="animales";
+                            let verAnimal = document.createElement("p");
+                            verAnimal.textContent = element.name;
+                            verAnimal.className="animales";
+                            divImpri.insertAdjacentElement("afterbegin",verAnimal);
+                            divImpri.insertAdjacentElement("afterbegin",titleAni);
+                            let idEspecie = element.idEspecies;
+                            arraySpecie.forEach(element => {
+                                if (element.Id === idEspecie) {
+                                    let titleEsp = document.createElement("h3");
+                                    titleEsp.textContent="Especie";
+                                    titleEsp.className="especie";
+                                    let verEspecie = document.createElement("p");
+                                    verEspecie.textContent = element.name;
+                                    verEspecie.className="especie";
+                                    divImpri.insertAdjacentElement("afterbegin",verEspecie);
+                                    divImpri.insertAdjacentElement("afterbegin",titleEsp);
+                                    let idZona = element.idZonas;
+                                    arrayAreas.forEach(element => {
+                                        if (element.Id === idZona) {
+                                            let titleArea = document.createElement("h3");
+                                            titleArea.textContent="Zona";
+                                            let verZona = document.createElement("p");
+                                            verZona.textContent = element.name;
+                                            divImpri.insertAdjacentElement("afterbegin",verZona);
+                                            divImpri.insertAdjacentElement("afterbegin",titleArea);
+                                        }
+                                    })
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        // else{
+        //     sectSearch.innerHTML="";
+        //     let mensaje = document.createElement("h2");
+        //     mensaje.textContent=`No se han encontrado resultados para tu búsqueda (${buscador}).`;
+        //     sectSearch.insertAdjacentElement("afterbegin",mensaje);
+        // }
+    });
 }
 
 let formulario = document.getElementById("formulario");
@@ -477,7 +714,7 @@ function envio(e,nameUserResp,resCommnet,idResComment){
     if (enums.inicioForm === "formComment") {
         let inputName = document.getElementById("floatingInput").value.toLowerCase();
         let inputTextarea = document.getElementById("floatingTextarea").value.toLowerCase();
-        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName) && /\S/.test(inputTextarea)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName) && /\S/.test(inputTextarea)){
             let submit = {
                 IdAnimals: enums.idAnimals,
                 Id : idComments(),
@@ -494,7 +731,7 @@ function envio(e,nameUserResp,resCommnet,idResComment){
     }
     if (enums.inicioForm === "formArea") {
         let inputNameArea = document.getElementById("floatingInput").value.toLowerCase();
-        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameArea)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameArea)){
             validarData(inputNameArea,arrayAreas);
             if(enums.validarElement === false){
                 let submit = {
@@ -513,7 +750,7 @@ function envio(e,nameUserResp,resCommnet,idResComment){
     }
     if (enums.inicioForm === "formSpecie") {
         let inputNameSpecie = document.getElementById("floatingInput").value.toLowerCase();
-        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameSpecie)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameSpecie)){
             validarData(inputNameSpecie,arraySpecie);
             if(enums.validarElement === false){
                 let submit = {
@@ -532,7 +769,7 @@ function envio(e,nameUserResp,resCommnet,idResComment){
     }
     if (enums.inicioForm === "formAnimal") {
         let inputNameAnimal = document.getElementById("floatingInput").value.toLowerCase();
-        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameAnimal)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameAnimal)){
             validarData(inputNameAnimal,arrayAnimal);
             if(enums.validarElement === false){
                 let submit = {
@@ -550,7 +787,7 @@ function envio(e,nameUserResp,resCommnet,idResComment){
         }
     }
     if (enums.inicioForm === "formResponder"){
-        if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(nameUserResp.value) && /\S/.test(resCommnet.value)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(nameUserResp.value) && /\S/.test(resCommnet.value)){
             let submit = { // Valores del Objetos son pasados por parametros
                 IdComment : idResComment,
                 nameUser : nameUserResp.value.toLowerCase(),
