@@ -4,7 +4,8 @@ let enums = {
     idEspecies : "",
     idAnimals : "",
     idComments : "",
-    validarElement : ""
+    validarElement : "",
+    busqueda: false
 }
 let arrayMenssage = [];
 let arrayAreas = [];
@@ -64,6 +65,8 @@ function dataLocalStorage() {
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 function formComment(){
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
     enums.inicioForm = "formComment";
 
     let sectForm = document.getElementById("sectForm");
@@ -174,6 +177,8 @@ function listaComment(id) {
     }
 }
 function formResponder(divForm,idComments,divRespComment) {
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
     divForm.innerHTML = "";
     divForm.className="divFormResp";
     divRespComment.className="d-none";
@@ -225,6 +230,8 @@ function listaRespuestas(id,divRespComment,divForm) {
     }
 }
 function formArea(){
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
     enums.inicioForm = "formArea";
 
     let sectionEspe = document.getElementById("sectVerEspecies");
@@ -300,6 +307,8 @@ function selectArea() {
 function formSpecieArea(e) {
     enums.inicioForm = "formSpecie";
 
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
     let sectionEspe = document.getElementById("sectVerEspecies");
     sectionEspe.className="d-none";
 
@@ -376,6 +385,8 @@ function listaSpecie(id) {
 function formAnimal(e) {
     enums.inicioForm = "formAnimal";
 
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
     let sectRespComment = document.getElementById("verComentarios");
     sectRespComment.className="d-none";
     let sectForm = document.getElementById("sectForm");
@@ -458,13 +469,18 @@ function listaAnimales(id,divContentAnimal) {
     }
 }
 function signOut(){
+    localStorage.removeItem("Areas Zoologico");
+    localStorage.removeItem("Especies");
+    localStorage.removeItem("Animales");
+    localStorage.removeItem("Comentarios");
+    localStorage.removeItem("ResponseComment");
     window.location.reload();
-    console.log("salir");
 }
 let formSearch = document.getElementById("forSearch");
 formSearch.addEventListener("submit",search);
 function search(e) {
     e.preventDefault();
+    enums.busqueda = false;
     let sectVerEspecies = document.getElementById("sectVerEspecies");
     sectVerEspecies.className="d-none";
     let sectForm = document.getElementById("sectForm");
@@ -475,7 +491,29 @@ function search(e) {
     let sectSearch = document.getElementById("verBusqueda");
     sectSearch.className="verBusqueda";
     sectSearch.innerHTML="";
-    verBusqueda(buscador,sectSearch);
+    if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(buscador) && buscador.length >= 4) {
+        verBusqueda(buscador,sectSearch);
+        formSearch.reset();
+    }
+    else{
+        sectSearch.innerHTML +=`
+        <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            Error en la busqueda:
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+          <div class="accordion-body">
+            <strong>Verifica que cumpla con las condiciones de busqueda:</strong>
+            <p>1- El numero minimo de caracteres por busqueda es de (4)</p>
+            <p>2- Solo se aceptan letras</p>
+            <p>3- Sin importar si son mayusculas o minusculas, el resultado de la busqueda sera el mismo</p>
+          </div>
+        </div>
+      </div>
+        `;
+    }
     // arrayAreas.forEach(element => {
     //     if (element.name === buscador) {
     //         console.log(`Imprimir ${element.name}`);
@@ -497,7 +535,6 @@ function search(e) {
     //         });
     //     }
     // });
-    formSearch.reset();
 }
 function verBusqueda(buscador,sectSearch) {
     arrayAreas.forEach(element => {
@@ -508,6 +545,7 @@ function verBusqueda(buscador,sectSearch) {
             verZona.textContent = element.name;
             sectSearch.insertAdjacentElement("beforeend",title);
             sectSearch.insertAdjacentElement("beforeend",verZona);
+            enums.busqueda = true;
         }
     });
     arraySpecie.forEach(element => {
@@ -531,12 +569,14 @@ function verBusqueda(buscador,sectSearch) {
                     sectSearch.insertAdjacentElement("afterbegin",titleArea);
                 }
             })
+            enums.busqueda = true;
         }
     });
     arrayAnimal.forEach(element => {
-        let divImpri = document.createElement("div");
-        sectSearch.insertAdjacentElement("beforeend",divImpri);
         if (element.name.includes(buscador)) {
+        let divImpri = document.createElement("div");
+        divImpri.className="bordeBottom";
+        sectSearch.insertAdjacentElement("beforeend",divImpri);
             let titleAni = document.createElement("h3");
             titleAni.textContent="Animal";
             titleAni.className="animales";
@@ -569,12 +609,14 @@ function verBusqueda(buscador,sectSearch) {
                 })
                 }
             });
+            enums.busqueda = true;
         }
     });
     arrayMenssage.forEach(element => {
-        let divImpri = document.createElement("div");
-        sectSearch.insertAdjacentElement("beforeend",divImpri);
         if (element.nameUser.includes(buscador) || element.comment.includes(buscador)) {
+            let divImpri = document.createElement("div");
+            divImpri.className="bordeBottom";
+            sectSearch.insertAdjacentElement("beforeend",divImpri);
             let titleComment = document.createElement("h3");
             titleComment.textContent="Comentario";
             titleComment.className="comentarios";
@@ -624,12 +666,14 @@ function verBusqueda(buscador,sectSearch) {
                     });
                 }
             });
+            enums.busqueda = true;
         }
     });
     arrayRespuestas.forEach(element => {
-        let divImpri = document.createElement("div");
-        sectSearch.insertAdjacentElement("beforeend",divImpri);
         if (element.nameUser.includes(buscador) || element.comment.includes(buscador)) {
+            let divImpri = document.createElement("div");
+            divImpri.className="bordeBottom";
+            sectSearch.insertAdjacentElement("beforeend",divImpri);
             let titleResp = document.createElement("h3");
             titleResp.textContent="Respuesta";
             titleResp.className="respuestas";
@@ -696,42 +740,24 @@ function verBusqueda(buscador,sectSearch) {
                     });
                 }
             });
+            enums.busqueda = true;
         }
-        // else{
-        //     sectSearch.innerHTML="";
-        //     let mensaje = document.createElement("h2");
-        //     mensaje.textContent=`No se han encontrado resultados para tu búsqueda (${buscador}).`;
-        //     sectSearch.insertAdjacentElement("afterbegin",mensaje);
-        // }
     });
+    if (enums.busqueda === false) {
+        sectSearch.innerHTML="";
+        let mensaje = document.createElement("h2");
+        mensaje.textContent=`No se han encontrado resultados para tu búsqueda (${buscador}).`;
+        sectSearch.insertAdjacentElement("beforeend",mensaje);
+    }
 }
 
 let formulario = document.getElementById("formulario");
 formulario.addEventListener("submit",envio);
-
 function envio(e,nameUserResp,resCommnet,idResComment){
     e.preventDefault();
-    if (enums.inicioForm === "formComment") {
-        let inputName = document.getElementById("floatingInput").value.toLowerCase();
-        let inputTextarea = document.getElementById("floatingTextarea").value.toLowerCase();
-        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName) && /\S/.test(inputTextarea)){
-            let submit = {
-                IdAnimals: enums.idAnimals,
-                Id : idComments(),
-                nameUser : inputName,
-                comment : inputTextarea
-            }
-            arrayMenssage.push(submit);
-            localStorage.setItem("Comentarios",JSON.stringify(arrayMenssage));
-            formulario.reset();
-        }
-        else{
-            alert("¡ERROR! El nombre del usuario solo debe contener letras y el comentario no se puede enviar en blanco")
-        }
-    }
     if (enums.inicioForm === "formArea") {
         let inputNameArea = document.getElementById("floatingInput").value.toLowerCase();
-        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameArea)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameArea) && inputNameArea.length >= 4){
             validarData(inputNameArea,arrayAreas);
             if(enums.validarElement === false){
                 let submit = {
@@ -745,12 +771,12 @@ function envio(e,nameUserResp,resCommnet,idResComment){
             }else{alert(`El area ${inputNameArea} ya existe`)}
         }
         else{
-            alert("¡ERROR! el nombre del area debe contener solo letras")
+            alert("¡ERROR! el nombre del area debe contener solo letras y minimo 4 caracteres")
         }
     }
     if (enums.inicioForm === "formSpecie") {
         let inputNameSpecie = document.getElementById("floatingInput").value.toLowerCase();
-        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameSpecie)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameSpecie) && inputNameSpecie.length >= 4){
             validarData(inputNameSpecie,arraySpecie);
             if(enums.validarElement === false){
                 let submit = {
@@ -764,12 +790,12 @@ function envio(e,nameUserResp,resCommnet,idResComment){
             }else{alert(`La especie ${inputNameSpecie} ya existe`)}
         }
         else{
-            alert("¡ERROR! el nombre de la especie debe contener solo letras");
+            alert("¡ERROR! el nombre de la especie debe contener solo letras y minimo 4 caracteres");
         }
     }
     if (enums.inicioForm === "formAnimal") {
         let inputNameAnimal = document.getElementById("floatingInput").value.toLowerCase();
-        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameAnimal)){
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputNameAnimal) && inputNameAnimal.length >= 4){
             validarData(inputNameAnimal,arrayAnimal);
             if(enums.validarElement === false){
                 let submit = {
@@ -783,23 +809,45 @@ function envio(e,nameUserResp,resCommnet,idResComment){
             }else{alert(`El animal ${inputNameAnimal} ya existe`)}
         }
         else{
-            alert("¡ERROR! el nombre del animal debe contener solo letras")
+            alert("¡ERROR! el nombre del animal debe contener solo letras y minimo 4 caracteres")
         }
     }
-    if (enums.inicioForm === "formResponder"){
-        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(nameUserResp.value) && /\S/.test(resCommnet.value)){
-            let submit = { // Valores del Objetos son pasados por parametros
-                IdComment : idResComment,
-                nameUser : nameUserResp.value.toLowerCase(),
-                comment : resCommnet.value.toLowerCase()
+    if (enums.inicioForm === "formComment") {
+        let inputName = document.getElementById("floatingInput").value.toLowerCase();
+        let inputTextarea = document.getElementById("floatingTextarea").value.toLowerCase();
+        if(inputName.length >= 4 && inputTextarea.length >= 4){
+            if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName) && /\S/.test(inputTextarea)){
+                let submit = {
+                    IdAnimals: enums.idAnimals,
+                    Id : idComments(),
+                    nameUser : inputName,
+                    comment : inputTextarea
+                }
+                arrayMenssage.push(submit);
+                localStorage.setItem("Comentarios",JSON.stringify(arrayMenssage));
+                formulario.reset();
             }
-            arrayRespuestas.push(submit);
-            localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
-            e.target.reset();
-        }
-        else{
-            alert("Solo se aceptan letras")
-        }
+            else{
+                alert("¡ERROR! El nombre del usuario solo debe contener letras y el comentario no se puede enviar en blanco")
+            }
+        }else{alert("Los campos admiten minimo 4 caracteres")}
+    }
+    if (enums.inicioForm === "formResponder"){
+        if(nameUserResp.value.length >= 4 && resCommnet.value.length >= 4){
+            if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(nameUserResp.value) && /\S/.test(resCommnet.value)){
+                let submit = { // Valores del Objetos son pasados por parametros
+                    IdComment : idResComment,
+                    nameUser : nameUserResp.value.toLowerCase(),
+                    comment : resCommnet.value.toLowerCase()
+                }
+                arrayRespuestas.push(submit);
+                localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
+                e.target.reset();
+            }
+            else{
+                alert("Solo se aceptan letras")
+            }
+        }else{alert("Los campos admiten minimo 4 caracteres")}
     }
 }
 function validarData(inputValue,arrayValidar) {
@@ -809,5 +857,4 @@ function validarData(inputValue,arrayValidar) {
     });
     enums.validarElement = array.includes(inputValue);
 }
-
 document.addEventListener("DOMContentLoaded",eventsItems);

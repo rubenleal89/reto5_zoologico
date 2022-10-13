@@ -167,7 +167,8 @@ main{
 /* Seccion del Search */
 
 .verBusqueda{
-    min-height: 100px;
+    padding: 10px;
+    border-radius: 5px;
     background-color: #212529;
     color: white;
 }
@@ -183,4 +184,8 @@ main{
 }
 .respuestas{
     margin-left: 160px;
+}
+
+.bordeBottom{
+    border-bottom:1px solid #EFD54E;
 }
