@@ -460,7 +460,7 @@ function listaRespuestas(id,divRespComment,divForm) {
                 <div class="toast fade show divRespuestas">
                     <div class="toast-header">
                         <strong class="me-auto">${element.nameUser}</strong>
-                        <p>${element.fech}</p>
+                        <p>${element.fechaHora}</p>
                     </div>
                     <div class="toast-body" id="divComment">
                         <p>${element.comment}</p>
