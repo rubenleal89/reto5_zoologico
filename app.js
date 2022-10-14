@@ -64,171 +64,6 @@ function dataLocalStorage() {
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////
-function formComment(){
-    let sectSearch = document.getElementById("verBusqueda");
-    sectSearch.className="d-none";
-    enums.inicioForm = "formComment";
-
-    let sectForm = document.getElementById("sectForm");
-    sectForm.className="sect-form";
-    let titleForm = document.getElementById("titleForm");
-    titleForm.textContent="Create Message"
-
-    formulario.innerHTML="";
-
-    let divInputName = document.createElement("div");
-    divInputName.className="form-floating mb-3";
-    let inputName = document.createElement("input")
-    inputName.type="text";
-    inputName.className="form-control rounded-3";
-    inputName.id="floatingInput";
-    inputName.placeholder="Your Name";
-    let labelName = document.createElement("label");
-    labelName.textContent="Your Name";
-    labelName.setAttribute("for","floatingInput");
-
-    let divInputMessage = document.createElement("div");
-    divInputMessage.className="form-floating mb-3";
-    let inputMessage = document.createElement("textarea")
-    inputMessage.className="textArea form-control rounded-3";
-    inputMessage.id="floatingTextarea";
-    inputMessage.placeholder="Message";
-    let labelMessage = document.createElement("label");
-    labelMessage.textContent="Message";
-    labelMessage.setAttribute("for","floatingTextarea");
-
-    let btnSubmit = document.createElement("button");
-    btnSubmit.type="submit";
-    btnSubmit.textContent="Submit";
-    btnSubmit.className="w-100 mb-2 btn btn-lg rounded-3 btn-primary";
-
-    formulario.insertAdjacentElement("beforeend",divInputName);
-    divInputName.insertAdjacentElement("beforeend",inputName);
-    divInputName.insertAdjacentElement("beforeend",labelName);
-
-    formulario.insertAdjacentElement("beforeend",divInputMessage);
-    divInputMessage.insertAdjacentElement("beforeend",inputMessage);
-    divInputMessage.insertAdjacentElement("beforeend",labelMessage);
-
-    formulario.insertAdjacentElement("beforeend",btnSubmit);
-}
-function listaComment(id) {
-    let section = document.getElementById("verComentarios");
-    section.className="verComentarios";
-    section.innerHTML="";
-    arrayMenssage = JSON.parse(localStorage.getItem("Comentarios"));
-
-    if (arrayMenssage === null) {
-        arrayMenssage=[];
-    }
-    else{
-        arrayMenssage.forEach(element => {
-            if(id === element.IdAnimals){
-                let divContents = document.createElement("div");
-                divContents.className="toast fade show";
-                let divNameUser = document.createElement("div");
-                divNameUser.className="toast-header";
-                let iconMess = document.createElement("i");
-                iconMess.className="fa-solid fa-message";
-                let nameUser = document.createElement("strong");
-                nameUser.className="me-auto";
-                nameUser.textContent=element.nameUser;
-
-
-                let divComment = document.createElement("div");
-                divComment.className="toast-body";
-                divComment.id="divComment";
-                let txtComment = document.createElement("p");
-                txtComment.textContent=element.comment;
-                let divRespuesta = document.createElement("div");
-                divRespuesta.className="btn-group";
-                let btnResponder = document.createElement("button");
-                btnResponder.className="btn btn-sm btn-secondary";
-                btnResponder.textContent="Responder";
-                btnResponder.addEventListener("click",(e)=>{
-                    formResponder(divForm,element.Id,divRespComment);
-                    enums.idComments = element.id;
-                })
-                let btnVerRespuestas = document.createElement("button");
-                btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
-                btnVerRespuestas.addEventListener("click",(e)=>{
-                    listaRespuestas(element.Id,divRespComment,divForm);
-                })
-                let spanFlecha = document.createElement("span");
-                spanFlecha.className="visually-hidden";
-                spanFlecha.textContent="Toggle Dropdown";
-                let divForm = document.createElement("div");
-                let divRespComment = document.createElement("div");
-                
-                section.insertAdjacentElement("beforeend",divContents);
-                divContents.insertAdjacentElement("beforeend",divNameUser);
-                divNameUser.insertAdjacentElement("beforeend",iconMess);
-                divNameUser.insertAdjacentElement("beforeend",nameUser);
-                divContents.insertAdjacentElement("beforeend",divComment);
-                divComment.insertAdjacentElement("beforeend",txtComment);
-                divComment.insertAdjacentElement("beforeend",divRespuesta);
-                divRespuesta.insertAdjacentElement("beforeend",btnResponder);
-                divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
-                divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
-                divComment.insertAdjacentElement("beforeend",divForm);
-                divComment.insertAdjacentElement("beforeend",divRespComment);
-            }
-        });
-    }
-}
-function formResponder(divForm,idComments,divRespComment) {
-    let sectSearch = document.getElementById("verBusqueda");
-    sectSearch.className="d-none";
-    divForm.innerHTML = "";
-    divForm.className="divFormResp";
-    divRespComment.className="d-none";
-    enums.inicioForm = "formResponder";
-    let formulario = document.createElement("form");
-    formulario.className="formRespuesta";
-    formulario.addEventListener("submit",(e)=>{
-        envio(e,nameUser,respuesta,idComments);
-    });
-    let nameUser = document.createElement("input");
-    nameUser.type="text";
-    nameUser.className="form-control form-control-sm nameUser";
-    nameUser.placeholder="Nombre Usuario";
-    let respuesta = document.createElement("textarea");
-    respuesta.className="form-control form-control-sm inpuntRespuesta";
-    respuesta.placeholder="Responder Commentario";
-    let btnSubmit = document.createElement("button");
-    btnSubmit.textContent="Enviar";
-    btnSubmit.className="btn btn-primary btn-sm";
-
-    divForm.insertAdjacentElement("beforeend",formulario);
-    formulario.insertAdjacentElement("beforeend",nameUser);
-    formulario.insertAdjacentElement("beforeend",respuesta);
-    formulario.insertAdjacentElement("beforeend",btnSubmit);
-}
-function listaRespuestas(id,divRespComment,divForm) {
-    arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
-    divRespComment.innerHTML="";
-    divRespComment.className="divVerRespuestas";
-    divForm.className="d-none";
-    if(arrayRespuestas === null){
-        arrayRespuestas = [];
-    }
-    else{
-        arrayRespuestas.forEach(element => {
-            if (id === element.IdComment) {
-                divRespComment.innerHTML +=`
-                <div class="toast fade show divRespuestas">
-                    <div class="toast-header">
-                        <strong class="me-auto">${element.nameUser}</strong>
-                    </div>
-                    <div class="toast-body" id="divComment">
-                        <p>${element.comment}</p>
-                    </div>
-                </div>
-                `;
-            }
-        });
-    }
-}
 function formArea(){
     let sectSearch = document.getElementById("verBusqueda");
     sectSearch.className="d-none";
@@ -464,6 +299,174 @@ function listaAnimales(id,divContentAnimal) {
                 divAnimal.insertAdjacentElement("beforeend",btnComentario);
                 divAnimal.insertAdjacentElement("beforeend",btnVerComentario);
                 btnVerComentario.insertAdjacentElement("beforeend",spanToggle);
+            }
+        });
+    }
+}
+function formComment(){
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
+    enums.inicioForm = "formComment";
+
+    let sectForm = document.getElementById("sectForm");
+    sectForm.className="sect-form";
+    let titleForm = document.getElementById("titleForm");
+    titleForm.textContent="Create Message"
+
+    formulario.innerHTML="";
+
+    let divInputName = document.createElement("div");
+    divInputName.className="form-floating mb-3";
+    let inputName = document.createElement("input")
+    inputName.type="text";
+    inputName.className="form-control rounded-3";
+    inputName.id="floatingInput";
+    inputName.placeholder="Your Name";
+    let labelName = document.createElement("label");
+    labelName.textContent="Your Name";
+    labelName.setAttribute("for","floatingInput");
+
+    let divInputMessage = document.createElement("div");
+    divInputMessage.className="form-floating mb-3";
+    let inputMessage = document.createElement("textarea")
+    inputMessage.className="textArea form-control rounded-3";
+    inputMessage.id="floatingTextarea";
+    inputMessage.placeholder="Message";
+    let labelMessage = document.createElement("label");
+    labelMessage.textContent="Message";
+    labelMessage.setAttribute("for","floatingTextarea");
+
+    let btnSubmit = document.createElement("button");
+    btnSubmit.type="submit";
+    btnSubmit.textContent="Submit";
+    btnSubmit.className="w-100 mb-2 btn btn-lg rounded-3 btn-primary";
+
+    formulario.insertAdjacentElement("beforeend",divInputName);
+    divInputName.insertAdjacentElement("beforeend",inputName);
+    divInputName.insertAdjacentElement("beforeend",labelName);
+
+    formulario.insertAdjacentElement("beforeend",divInputMessage);
+    divInputMessage.insertAdjacentElement("beforeend",inputMessage);
+    divInputMessage.insertAdjacentElement("beforeend",labelMessage);
+
+    formulario.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaComment(id) {
+    let section = document.getElementById("verComentarios");
+    section.className="verComentarios";
+    section.innerHTML="";
+    arrayMenssage = JSON.parse(localStorage.getItem("Comentarios"));
+
+    if (arrayMenssage === null) {
+        arrayMenssage=[];
+    }
+    else{
+        arrayMenssage.forEach(element => {
+            if(id === element.IdAnimals){
+                let divContents = document.createElement("div");
+                divContents.className="toast fade show";
+                let divNameUser = document.createElement("div");
+                divNameUser.className="toast-header";
+                let iconMess = document.createElement("i");
+                iconMess.className="fa-solid fa-message";
+                let nameUser = document.createElement("strong");
+                nameUser.className="me-auto";
+                nameUser.textContent=element.nameUser;
+                let horaFech = document.createElement("p");
+                horaFech.textContent=element.fechaHora;
+
+                let divComment = document.createElement("div");
+                divComment.className="toast-body";
+                divComment.id="divComment";
+                let txtComment = document.createElement("p");
+                txtComment.textContent=element.comment;
+                let divRespuesta = document.createElement("div");
+                divRespuesta.className="btn-group";
+                let btnResponder = document.createElement("button");
+                btnResponder.className="btn btn-sm btn-secondary";
+                btnResponder.textContent="Responder";
+                btnResponder.addEventListener("click",(e)=>{
+                    formResponder(divForm,element.Id,divRespComment);
+                    enums.idComments = element.id;
+                })
+                let btnVerRespuestas = document.createElement("button");
+                btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
+                btnVerRespuestas.addEventListener("click",(e)=>{
+                    listaRespuestas(element.Id,divRespComment,divForm);
+                })
+                let spanFlecha = document.createElement("span");
+                spanFlecha.className="visually-hidden";
+                spanFlecha.textContent="Toggle Dropdown";
+                let divForm = document.createElement("div");
+                let divRespComment = document.createElement("div");
+                
+                section.insertAdjacentElement("beforeend",divContents);
+                divContents.insertAdjacentElement("beforeend",divNameUser);
+                divNameUser.insertAdjacentElement("beforeend",iconMess);
+                divNameUser.insertAdjacentElement("beforeend",nameUser);
+                divNameUser.insertAdjacentElement("beforeend",horaFech);
+                divContents.insertAdjacentElement("beforeend",divComment);
+                divComment.insertAdjacentElement("beforeend",txtComment);
+                divComment.insertAdjacentElement("beforeend",divRespuesta);
+                divRespuesta.insertAdjacentElement("beforeend",btnResponder);
+                divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
+                divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
+                divComment.insertAdjacentElement("beforeend",divForm);
+                divComment.insertAdjacentElement("beforeend",divRespComment);
+            }
+        });
+    }
+}
+function formResponder(divForm,idComments,divRespComment) {
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className="d-none";
+    divForm.innerHTML = "";
+    divForm.className="divFormResp";
+    divRespComment.className="d-none";
+    enums.inicioForm = "formResponder";
+    let formulario = document.createElement("form");
+    formulario.className="formRespuesta";
+    formulario.addEventListener("submit",(e)=>{
+        envio(e,nameUser,respuesta,idComments);
+    });
+    let nameUser = document.createElement("input");
+    nameUser.type="text";
+    nameUser.className="form-control form-control-sm nameUser";
+    nameUser.placeholder="Nombre Usuario";
+    let respuesta = document.createElement("textarea");
+    respuesta.className="form-control form-control-sm inpuntRespuesta";
+    respuesta.placeholder="Responder Commentario";
+    let btnSubmit = document.createElement("button");
+    btnSubmit.textContent="Enviar";
+    btnSubmit.className="btn btn-primary btn-sm";
+
+    divForm.insertAdjacentElement("beforeend",formulario);
+    formulario.insertAdjacentElement("beforeend",nameUser);
+    formulario.insertAdjacentElement("beforeend",respuesta);
+    formulario.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaRespuestas(id,divRespComment,divForm) {
+    arrayRespuestas = JSON.parse(localStorage.getItem("ResponseComment"));
+    divRespComment.innerHTML="";
+    divRespComment.className="divVerRespuestas";
+    divForm.className="d-none";
+    if(arrayRespuestas === null){
+        arrayRespuestas = [];
+    }
+    else{
+        arrayRespuestas.forEach(element => {
+            if (id === element.IdComment) {
+                divRespComment.innerHTML +=`
+                <div class="toast fade show divRespuestas">
+                    <div class="toast-header">
+                        <strong class="me-auto">${element.nameUser}</strong>
+                        <p>${element.fech}</p>
+                    </div>
+                    <div class="toast-body" id="divComment">
+                        <p>${element.comment}</p>
+                    </div>
+                </div>
+                `;
             }
         });
     }
@@ -796,11 +799,15 @@ function envio(e,nameUserResp,resCommnet,idResComment){
         let inputTextarea = document.getElementById("floatingTextarea").value.toLowerCase();
         if(inputName.length >= 4 && inputTextarea.length >= 4){
             if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName) && /\S/.test(inputTextarea)){
+                let date = new Date();
+                let fecha = `Date: ${date.getDate()}/${date.getMonth()}/${date.getFullYear()} H24: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                console.log(fecha);
                 let submit = {
                     IdAnimals: enums.idAnimals,
                     Id : idComments(),
                     nameUser : inputName,
-                    comment : inputTextarea
+                    comment : inputTextarea,
+                    fechaHora : fecha
                 }
                 arrayMenssage.push(submit);
                 localStorage.setItem("Comentarios",JSON.stringify(arrayMenssage));
@@ -814,10 +821,13 @@ function envio(e,nameUserResp,resCommnet,idResComment){
     if (enums.inicioForm === "formResponder"){
         if(nameUserResp.value.length >= 4 && resCommnet.value.length >= 4){
             if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(nameUserResp.value) && /\S/.test(resCommnet.value)){
+                let date = new Date();
+                let fecha = `Date: ${date.getDate()}/${date.getMonth()}/${date.getFullYear()} H24: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
                 let submit = { // Valores del Objetos son pasados por parametros
                     IdComment : idResComment,
                     nameUser : nameUserResp.value.toLowerCase(),
-                    comment : resCommnet.value.toLowerCase()
+                    comment : resCommnet.value.toLowerCase(),
+                    fechaHora : fecha
                 }
                 arrayRespuestas.push(submit);
                 localStorage.setItem("ResponseComment",JSON.stringify(arrayRespuestas));
