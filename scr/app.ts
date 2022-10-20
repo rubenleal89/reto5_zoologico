@@ -10,8 +10,8 @@ let idObjPadre:number;
 let arrayAreas: (idName)[] = []
 let arrayEspecies: (idName&especies)[] = []
 let arrayAnimales: (idName&animales)[] = []
-let arrayComentarios: (idName&comentarios)[] = []
-let arrayRespuestas: (idName&respuestas)[] = []
+let arrayComentarios: (idComRes&comentarios)[] = []
+let arrayRespuestas: (idComRes&respuestas)[] = []
 type idName ={
   Id:number,
   name:string
@@ -22,17 +22,23 @@ type especies = {
 type animales = {
   idEspecie:number,
 }
+type idComRes = {
+  Id:number,
+  comment:string
+  nameUser:string
+  fechaHora:string
+}
 type comentarios = {
   idAnimal:number,
-  nameUser:string
 }
 type respuestas = {
   idComentario:number,
-  nameUser:string
 }
 function eventsItems() {
+  let close = document.getElementById("signOut") as HTMLElement;
   let newArea = document.getElementById("newArea") as HTMLElement
   newArea.addEventListener("click",formArea)
+  close.addEventListener("click",signOut)
   dataLocalStorage()
   selectArea()
 }
@@ -46,12 +52,12 @@ function dataLocalStorage() {
   if(localStorage.getItem('Animales')){
     arrayAnimales = JSON.parse(localStorage.getItem("Animales") || "")
   }
-  // if(localStorage.getItem('Comentarios')){
-  //   arrayComentarios = JSON.parse(localStorage.getItem("Comentarios") || "")
-  // }
-  // if(localStorage.getItem('Respuestas')){
-  //   arrayRespuestas = JSON.parse(localStorage.getItem("Respuestas") || "")
-  // }
+  if(localStorage.getItem('Comentarios')){
+    arrayComentarios = JSON.parse(localStorage.getItem("Comentarios") || "")
+  }
+  if(localStorage.getItem('Respuestas')){
+    arrayRespuestas = JSON.parse(localStorage.getItem("Respuestas") || "")
+  }
 }
 function Ids(){
   let lastId = localStorage.getItem("idGeneral") || "-1";
@@ -245,7 +251,7 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
           btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
           btnVerComentario.addEventListener("click",(e)=>{
               sectForm.className="d-none";
-              // listaComment(element.Id);
+              listaComment(element.Id);
           });
           let spanToggle = document.createElement("span") as HTMLSpanElement;
           spanToggle.className="visually-hidden";
@@ -255,8 +261,8 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
           btnComentario.textContent="+";
           btnComentario.addEventListener("click",(e)=>{
               sectComment.className="d-none";
-              // formComment();
-              // enums.idAnimals = element.Id;
+              formComment();
+              idObjPadre = element.Id;
           });
 
           divContentAnimal.insertAdjacentElement("beforeend",divAnimal);
@@ -266,6 +272,167 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
           btnVerComentario.insertAdjacentElement("beforeend",spanToggle);
       }
   });
+}
+function formComment(){
+  validarForm = enums.formComentario
+  let sectSearch = document.getElementById("verBusqueda") as HTMLElement;
+  sectSearch.className="d-none"
+  let sectForm = document.getElementById("sectForm") as HTMLElement
+  sectForm.className="sect-form";
+  let titleForm = document.getElementById("titleForm") as HTMLElement;
+  titleForm.textContent="Create Message"
+  form.innerHTML="";
+
+  let divInputName = document.createElement("div") as HTMLDivElement;
+  divInputName.className="form-floating mb-3";
+  let inputName = document.createElement("input") as HTMLInputElement
+  inputName.type="text";
+  inputName.className="form-control rounded-3";
+  inputName.id="floatingInput";
+  inputName.placeholder="Your Name";
+  let labelName = document.createElement("label");
+  labelName.textContent="Your Name";
+  labelName.setAttribute("for","floatingInput");
+
+  let divInputMessage = document.createElement("div");
+  divInputMessage.className="form-floating mb-3";
+  let inputMessage = document.createElement("textarea")
+  inputMessage.className="textArea form-control rounded-3";
+  inputMessage.id="floatingTextarea";
+  inputMessage.placeholder="Message";
+  let labelMessage = document.createElement("label");
+  labelMessage.textContent="Message";
+  labelMessage.setAttribute("for","floatingTextarea");
+
+  let btnSubmit = document.createElement("button");
+  btnSubmit.type="submit";
+  btnSubmit.textContent="Submit";
+  btnSubmit.className="w-100 mb-2 btn btn-lg rounded-3 btn-primary";
+
+  form.insertAdjacentElement("beforeend",divInputName);
+  divInputName.insertAdjacentElement("beforeend",inputName);
+  divInputName.insertAdjacentElement("beforeend",labelName);
+
+  form.insertAdjacentElement("beforeend",divInputMessage);
+  divInputMessage.insertAdjacentElement("beforeend",inputMessage);
+  divInputMessage.insertAdjacentElement("beforeend",labelMessage);
+
+  form.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaComment(id:number) {
+  let section = document.getElementById("verComentarios") as HTMLElement;
+  section.className="verComentarios";
+  section.innerHTML="";
+  arrayComentarios.forEach(element => {
+      if(id === element.idAnimal){
+          let divContents = document.createElement("div");
+          divContents.className="toast fade show";
+          let divNameUser = document.createElement("div");
+          divNameUser.className="toast-header";
+          let iconMess = document.createElement("i");
+          iconMess.className="fa-solid fa-message";
+          let nameUser = document.createElement("strong");
+          nameUser.className="me-auto";
+          nameUser.textContent=element.nameUser;
+          let horaFech = document.createElement("p");
+          horaFech.textContent=element.fechaHora;
+
+          let divComment = document.createElement("div");
+          divComment.className="toast-body";
+          divComment.id="divComment";
+          let txtComment = document.createElement("p");
+          txtComment.textContent=element.comment;
+          let divRespuesta = document.createElement("div");
+          divRespuesta.className="btn-group";
+          let btnResponder = document.createElement("button");
+          btnResponder.className="btn btn-sm btn-secondary";
+          btnResponder.textContent="Responder";
+          btnResponder.addEventListener("click",(e)=>{
+              idObjPadre = element.Id;
+              formResponder(divForm,divRespComment);
+          })
+          let btnVerRespuestas = document.createElement("button");
+          btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
+          btnVerRespuestas.addEventListener("click",(e)=>{
+              listaRespuestas(element.Id,divRespComment,divForm);
+          })
+          let spanFlecha = document.createElement("span");
+          spanFlecha.className="visually-hidden";
+          spanFlecha.textContent="Toggle Dropdown";
+          let divForm = document.createElement("div");
+          let divRespComment = document.createElement("div");
+
+          section.insertAdjacentElement("beforeend",divContents);
+          divContents.insertAdjacentElement("beforeend",divNameUser);
+          divNameUser.insertAdjacentElement("beforeend",iconMess);
+          divNameUser.insertAdjacentElement("beforeend",nameUser);
+          divNameUser.insertAdjacentElement("beforeend",horaFech);
+          divContents.insertAdjacentElement("beforeend",divComment);
+          divComment.insertAdjacentElement("beforeend",txtComment);
+          divComment.insertAdjacentElement("beforeend",divRespuesta);
+          divRespuesta.insertAdjacentElement("beforeend",btnResponder);
+          divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
+          divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
+          divComment.insertAdjacentElement("beforeend",divForm);
+          divComment.insertAdjacentElement("beforeend",divRespComment);
+      }
+  });
+}
+function formResponder(divForm:HTMLDivElement,divRespComment:HTMLElement) {
+  validarForm = enums.formRespuesta
+  let sectSearch = document.getElementById("verBusqueda") as HTMLElement;
+  sectSearch.className="d-none";
+  divForm.innerHTML = "";
+  divForm.className="divFormResp";
+  divRespComment.className="d-none";
+  let formulario = document.createElement("form");
+  formulario.className="formRespuesta";
+  formulario.addEventListener("submit",envio);
+  let nameUser = document.createElement("input");
+  nameUser.type="text";
+  nameUser.id = `inputUser${idObjPadre}`
+  nameUser.className="form-control form-control-sm nameUser";
+  nameUser.placeholder="Nombre Usuario";
+  let respuesta = document.createElement("textarea");
+  respuesta.id = `inputResp${idObjPadre}`
+  respuesta.className="form-control form-control-sm inpuntRespuesta";
+  respuesta.placeholder="Responder Commentario";
+  let btnSubmit = document.createElement("button");
+  btnSubmit.textContent="Enviar";
+  btnSubmit.className="btn btn-primary btn-sm";
+
+  divForm.insertAdjacentElement("beforeend",formulario);
+  formulario.insertAdjacentElement("beforeend",nameUser);
+  formulario.insertAdjacentElement("beforeend",respuesta);
+  formulario.insertAdjacentElement("beforeend",btnSubmit);
+}
+function listaRespuestas(id:number,divRespComment:HTMLDivElement,divForm:HTMLDivElement) {
+  divRespComment.innerHTML="";
+  divRespComment.className="divVerRespuestas";
+  divForm.className="d-none";
+  arrayRespuestas.forEach(element => {
+      if (id === element.idComentario) {
+          divRespComment.innerHTML +=`
+          <div class="toast fade show divRespuestas">
+              <div class="toast-header">
+                  <strong class="me-auto">${element.nameUser}</strong>
+                  <p>${element.fechaHora}</p>
+              </div>
+              <div class="toast-body" id="divComment">
+                  <p>${element.comment}</p>
+              </div>
+          </div>
+          `;
+      }
+  });
+}
+function signOut(){
+  localStorage.removeItem("Areas");
+  localStorage.removeItem("Especies");
+  localStorage.removeItem("Animales");
+  localStorage.removeItem("Comentarios");
+  localStorage.removeItem("Respuestas");
+  window.location.reload();
 }
 let form = document.getElementById("formulario") as HTMLFormElement
 form.addEventListener("submit",envio)
@@ -307,13 +474,16 @@ function envio(e:Event) {
     form.reset();
   }
   if (validarForm === enums.formComentario) {
-    let inputName = document.getElementById("floatingInput") as HTMLInputElement
+    let inputComment = document.getElementById("floatingTextarea") as HTMLInputElement
     let inputNameUser = document.getElementById("floatingInput") as HTMLInputElement
-    let data:idName&comentarios = {
+    let date = new Date();
+    let fecha = `Date: ${date.getDate()}/${date.getMonth()}/${date.getFullYear()} H24: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    let data:idComRes&comentarios = {
       Id:Ids(),
       idAnimal : idObjPadre,
-      name: inputName.value,
-      nameUser : inputNameUser.value
+      comment: inputComment.value,
+      nameUser : inputNameUser.value,
+      fechaHora : fecha
     }
     arrayComentarios.push(data);
     localStorage.setItem("Comentarios", JSON.stringify(arrayComentarios));
@@ -321,13 +491,18 @@ function envio(e:Event) {
     form.reset();
   }
   if (validarForm === enums.formRespuesta) {
-    let inputName = document.getElementById("floatingInput") as HTMLInputElement
-    let inputNameUser = document.getElementById("floatingInput") as HTMLInputElement
-    let data:idName&respuestas = {
+    let date = new Date();
+    let fecha = `Date: ${date.getDate()}/${date.getMonth()}/${date.getFullYear()} H24: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    let inputComment = document.getElementById(`inputResp${idObjPadre}`) as HTMLInputElement
+    let inputNameUser = document.getElementById(`inputUser${idObjPadre}`) as HTMLInputElement
+    console.log(`Resp: ${inputComment.value} - User:${inputNameUser.value}`);
+
+    let data:idComRes&respuestas = {
       Id:Ids(),
       idComentario : idObjPadre,
-      name: inputName.value,
-      nameUser : inputNameUser.value
+      comment: inputComment.value,
+      nameUser : inputNameUser.value,
+      fechaHora : fecha
     }
     arrayRespuestas.push(data);
     localStorage.setItem("Respuestas", JSON.stringify(arrayRespuestas));
