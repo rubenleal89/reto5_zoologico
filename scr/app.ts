@@ -10,8 +10,8 @@ let idObjPadre:number;
 let arrayAreas: (idName)[] = []
 let arrayEspecies: (idName&especies)[] = []
 let arrayAnimales: (idName&animales)[] = []
-let arrayComentarios: (idName|comentarios)[] = []
-let arrayRespuestas: (idName|respuestas)[] = []
+let arrayComentarios: (idName&comentarios)[] = []
+let arrayRespuestas: (idName&respuestas)[] = []
 type idName ={
   Id:number,
   name:string
@@ -168,7 +168,7 @@ function listaSpecie(id:number) {
         let btnVerAnimal = document.createElement("button");
         btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split addSee";
         btnVerAnimal.addEventListener("click",(e)=>{
-            // listaAnimales(element.Id,divContentAnimal);
+            listaAnimales(element.Id,divContentAnimal);
         });
         let spanToggle = document.createElement("span");
         spanToggle.className="visually-hidden";
@@ -190,6 +190,7 @@ function listaSpecie(id:number) {
   });
 }
 function formAnimal(nameSpecie:string) {
+  validarForm = enums.formAnimal
   let sectSearch = document.getElementById("verBusqueda") as HTMLElement;
   sectSearch.className="d-none";
   let sectRespComment = document.getElementById("verComentarios") as HTMLElement;
@@ -235,27 +236,27 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
 
   arrayAnimales.forEach(element => {
       if(id === element.idEspecie){
-          let divAnimal = document.createElement("div");
+          let divAnimal = document.createElement("div") as HTMLDivElement;
           divAnimal.className="btn-group dropend btnSpecies separadoBtn";
-          let divNameAnimal = document.createElement("div");
+          let divNameAnimal = document.createElement("div") as HTMLDivElement;
           divNameAnimal.className="divNameSpecie btnSpecies";
           divNameAnimal.textContent=element.name;
-          let btnVerComentario = document.createElement("button");
+          let btnVerComentario = document.createElement("button") as HTMLButtonElement;
           btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
           btnVerComentario.addEventListener("click",(e)=>{
               sectForm.className="d-none";
-              listaComment(element.Id);
+              // listaComment(element.Id);
           });
-          let spanToggle = document.createElement("span");
+          let spanToggle = document.createElement("span") as HTMLSpanElement;
           spanToggle.className="visually-hidden";
           spanToggle.textContent="Toggle Dropend";
-          let btnComentario = document.createElement("button");
+          let btnComentario = document.createElement("button") as HTMLButtonElement;
           btnComentario.className="btn btn-secondary dropdown-toggle-split";
           btnComentario.textContent="+";
           btnComentario.addEventListener("click",(e)=>{
               sectComment.className="d-none";
-              formComment();
-              enums.idAnimals = element.Id;
+              // formComment();
+              // enums.idAnimals = element.Id;
           });
 
           divContentAnimal.insertAdjacentElement("beforeend",divAnimal);
@@ -308,7 +309,7 @@ function envio(e:Event) {
   if (validarForm === enums.formComentario) {
     let inputName = document.getElementById("floatingInput") as HTMLInputElement
     let inputNameUser = document.getElementById("floatingInput") as HTMLInputElement
-    let data:idName|comentarios = {
+    let data:idName&comentarios = {
       Id:Ids(),
       idAnimal : idObjPadre,
       name: inputName.value,
@@ -322,7 +323,7 @@ function envio(e:Event) {
   if (validarForm === enums.formRespuesta) {
     let inputName = document.getElementById("floatingInput") as HTMLInputElement
     let inputNameUser = document.getElementById("floatingInput") as HTMLInputElement
-    let data:idName|respuestas = {
+    let data:idName&respuestas = {
       Id:Ids(),
       idComentario : idObjPadre,
       name: inputName.value,
