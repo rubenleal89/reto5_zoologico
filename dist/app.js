@@ -7,6 +7,7 @@ let enums = {
     formRespuesta: "formularioRespuesta"
 };
 let validarForm;
+let validarBusqueda;
 let idObjPadre;
 let arrayAreas = [];
 let arrayEspecies = [];
@@ -388,44 +389,336 @@ function signOut() {
     localStorage.removeItem("Respuestas");
     window.location.reload();
 }
+let formSearch = document.getElementById("forSearch");
+formSearch.addEventListener("submit", search);
+function search(e) {
+    e.preventDefault();
+    validarBusqueda = false;
+    let sectVerEspecies = document.getElementById("sectVerEspecies");
+    sectVerEspecies.className = "d-none";
+    let sectForm = document.getElementById("sectForm");
+    sectForm.className = "d-none";
+    let sectVerComentarios = document.getElementById("verComentarios");
+    sectVerComentarios.className = "d-none";
+    let buscador = document.getElementById("inputSearch");
+    let valueBuscador = buscador.value.toLowerCase();
+    let sectSearch = document.getElementById("verBusqueda");
+    sectSearch.className = "verBusqueda";
+    sectSearch.innerHTML = "";
+    if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(valueBuscador) && valueBuscador.length >= 4) {
+        verBusqueda(valueBuscador, sectSearch);
+        formSearch.reset();
+    }
+    else {
+        sectSearch.innerHTML += `
+        <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            Error en la busqueda:
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+          <div class="accordion-body">
+            <strong>Verifica que cumpla con las condiciones de busqueda:</strong>
+            <p>1- El numero minimo de caracteres por busqueda es de (4)</p>
+            <p>2- Solo se aceptan letras</p>
+            <p>3- Sin importar si son mayusculas o minusculas, el resultado de la busqueda sera el mismo</p>
+          </div>
+        </div>
+      </div>
+        `;
+    }
+}
+function verBusqueda(buscador, sectSearch) {
+    arrayAreas.forEach(element => {
+        if (element.name.includes(buscador)) {
+            let title = document.createElement("h3");
+            title.textContent = "Zona";
+            let verZona = document.createElement("p");
+            verZona.textContent = element.name;
+            sectSearch.insertAdjacentElement("beforeend", title);
+            sectSearch.insertAdjacentElement("beforeend", verZona);
+            validarBusqueda = true;
+        }
+    });
+    arrayEspecies.forEach(element => {
+        if (element.name.includes(buscador)) {
+            let titleEsp = document.createElement("h3");
+            titleEsp.textContent = "Area";
+            titleEsp.className = "especie";
+            let verEspecie = document.createElement("p");
+            verEspecie.textContent = element.name;
+            verEspecie.className = "especie";
+            sectSearch.insertAdjacentElement("beforeend", titleEsp);
+            sectSearch.insertAdjacentElement("beforeend", verEspecie);
+            let idZona = element.idArea;
+            arrayAreas.forEach(element => {
+                if (element.Id === idZona) {
+                    let titleArea = document.createElement("h3");
+                    titleArea.textContent = "Zona";
+                    let verZona = document.createElement("p");
+                    verZona.textContent = element.name;
+                    sectSearch.insertAdjacentElement("afterbegin", verZona);
+                    sectSearch.insertAdjacentElement("afterbegin", titleArea);
+                }
+            });
+            validarBusqueda = true;
+        }
+    });
+    arrayAnimales.forEach(element => {
+        if (element.name.includes(buscador)) {
+            let divImpri = document.createElement("div");
+            divImpri.className = "bordeBottom";
+            sectSearch.insertAdjacentElement("beforeend", divImpri);
+            let titleAni = document.createElement("h3");
+            titleAni.textContent = "Animal";
+            titleAni.className = "animales";
+            let verAnimal = document.createElement("p");
+            verAnimal.textContent = element.name;
+            verAnimal.className = "animales";
+            divImpri.insertAdjacentElement("beforeend", titleAni);
+            divImpri.insertAdjacentElement("beforeend", verAnimal);
+            let idEspecie = element.idEspecie;
+            arrayEspecies.forEach(element => {
+                if (element.Id === idEspecie) {
+                    let titleEsp = document.createElement("h3");
+                    titleEsp.textContent = "Especie";
+                    titleEsp.className = "especie";
+                    let verEspecie = document.createElement("p");
+                    verEspecie.textContent = element.name;
+                    verEspecie.className = "especie";
+                    divImpri.insertAdjacentElement("afterbegin", verEspecie);
+                    divImpri.insertAdjacentElement("afterbegin", titleEsp);
+                    let idZona = element.idArea;
+                    arrayAreas.forEach(element => {
+                        if (element.Id === idZona) {
+                            let titleArea = document.createElement("h3");
+                            titleArea.textContent = "Area";
+                            let verZona = document.createElement("p");
+                            verZona.textContent = element.name;
+                            divImpri.insertAdjacentElement("afterbegin", verZona);
+                            divImpri.insertAdjacentElement("afterbegin", titleArea);
+                        }
+                    });
+                }
+            });
+            validarBusqueda = true;
+        }
+    });
+    arrayComentarios.forEach(element => {
+        if (element.nameUser.includes(buscador) || element.comment.includes(buscador)) {
+            let divImpri = document.createElement("div");
+            divImpri.className = "bordeBottom";
+            sectSearch.insertAdjacentElement("beforeend", divImpri);
+            let titleComment = document.createElement("h3");
+            titleComment.textContent = "Comentario";
+            titleComment.className = "comentarios";
+            let verNameUser = document.createElement("p");
+            verNameUser.textContent = `User: ${element.nameUser}`;
+            verNameUser.className = "comentarios";
+            let verComment = document.createElement("p");
+            verComment.textContent = `Comment: ${element.comment}`;
+            verComment.className = "comentarios";
+            divImpri.insertAdjacentElement("beforeend", titleComment);
+            divImpri.insertAdjacentElement("beforeend", verNameUser);
+            divImpri.insertAdjacentElement("beforeend", verComment);
+            let idAnimal = element.idAnimal;
+            arrayAnimales.forEach(element => {
+                if (element.Id === idAnimal) {
+                    let titleAni = document.createElement("h3");
+                    titleAni.textContent = "Animal";
+                    titleAni.className = "animales";
+                    let verAnimal = document.createElement("p");
+                    verAnimal.textContent = element.name;
+                    verAnimal.className = "animales";
+                    divImpri.insertAdjacentElement("afterbegin", verAnimal);
+                    divImpri.insertAdjacentElement("afterbegin", titleAni);
+                    let idEspecie = element.idEspecie;
+                    arrayEspecies.forEach(element => {
+                        if (element.Id === idEspecie) {
+                            let titleEsp = document.createElement("h3");
+                            titleEsp.textContent = "Especie";
+                            titleEsp.className = "especie";
+                            let verEspecie = document.createElement("p");
+                            verEspecie.textContent = element.name;
+                            verEspecie.className = "especie";
+                            divImpri.insertAdjacentElement("afterbegin", verEspecie);
+                            divImpri.insertAdjacentElement("afterbegin", titleEsp);
+                            let idZona = element.idArea;
+                            arrayAreas.forEach(element => {
+                                if (element.Id === idZona) {
+                                    let titleArea = document.createElement("h3");
+                                    titleArea.textContent = "Zona";
+                                    let verZona = document.createElement("p");
+                                    verZona.textContent = element.name;
+                                    divImpri.insertAdjacentElement("afterbegin", verZona);
+                                    divImpri.insertAdjacentElement("afterbegin", titleArea);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            validarBusqueda = true;
+        }
+    });
+    arrayRespuestas.forEach(element => {
+        if (element.nameUser.includes(buscador) || element.comment.includes(buscador)) {
+            let divImpri = document.createElement("div");
+            divImpri.className = "bordeBottom";
+            sectSearch.insertAdjacentElement("beforeend", divImpri);
+            let titleResp = document.createElement("h3");
+            titleResp.textContent = "Respuesta";
+            titleResp.className = "respuestas";
+            let verNameUser = document.createElement("p");
+            verNameUser.textContent = `User: ${element.nameUser}`;
+            verNameUser.className = "respuestas";
+            let verResp = document.createElement("p");
+            verResp.textContent = `Respuesta: ${element.comment}`;
+            verResp.className = "respuestas";
+            divImpri.insertAdjacentElement("beforeend", titleResp);
+            divImpri.insertAdjacentElement("beforeend", verNameUser);
+            divImpri.insertAdjacentElement("beforeend", verResp);
+            let idComment = element.idComentario;
+            arrayComentarios.forEach(element => {
+                if (element.Id === idComment) {
+                    let titleComment = document.createElement("h3");
+                    titleComment.textContent = "Comentario";
+                    titleComment.className = "comentarios";
+                    let verNameUser = document.createElement("p");
+                    verNameUser.textContent = `User: ${element.nameUser}`;
+                    verNameUser.className = "comentarios";
+                    let verComment = document.createElement("p");
+                    verComment.textContent = `Comment: ${element.comment}`;
+                    verComment.className = "comentarios";
+                    divImpri.insertAdjacentElement("afterbegin", verComment);
+                    divImpri.insertAdjacentElement("afterbegin", verNameUser);
+                    divImpri.insertAdjacentElement("afterbegin", titleComment);
+                    let idAnimal = element.idAnimal;
+                    arrayAnimales.forEach(element => {
+                        if (element.Id === idAnimal) {
+                            let titleAni = document.createElement("h3");
+                            titleAni.textContent = "Animal";
+                            titleAni.className = "animales";
+                            let verAnimal = document.createElement("p");
+                            verAnimal.textContent = element.name;
+                            verAnimal.className = "animales";
+                            divImpri.insertAdjacentElement("afterbegin", verAnimal);
+                            divImpri.insertAdjacentElement("afterbegin", titleAni);
+                            let idEspecie = element.idEspecie;
+                            arrayEspecies.forEach(element => {
+                                if (element.Id === idEspecie) {
+                                    let titleEsp = document.createElement("h3");
+                                    titleEsp.textContent = "Especie";
+                                    titleEsp.className = "especie";
+                                    let verEspecie = document.createElement("p");
+                                    verEspecie.textContent = element.name;
+                                    verEspecie.className = "especie";
+                                    divImpri.insertAdjacentElement("afterbegin", verEspecie);
+                                    divImpri.insertAdjacentElement("afterbegin", titleEsp);
+                                    let idZona = element.idArea;
+                                    arrayAreas.forEach(element => {
+                                        if (element.Id === idZona) {
+                                            let titleArea = document.createElement("h3");
+                                            titleArea.textContent = "Zona";
+                                            let verZona = document.createElement("p");
+                                            verZona.textContent = element.name;
+                                            divImpri.insertAdjacentElement("afterbegin", verZona);
+                                            divImpri.insertAdjacentElement("afterbegin", titleArea);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            validarBusqueda = true;
+        }
+    });
+    if (validarBusqueda === false) {
+        sectSearch.innerHTML = "";
+        let mensaje = document.createElement("h2");
+        mensaje.textContent = `No se han encontrado resultados para tu búsqueda (${buscador}).`;
+        sectSearch.insertAdjacentElement("beforeend", mensaje);
+    }
+}
 let form = document.getElementById("formulario");
 form.addEventListener("submit", envio);
 function envio(e) {
     e.preventDefault();
     if (validarForm === enums.formArea) {
         let inputName = document.getElementById("floatingInput");
-        let data = {
-            Id: Ids(),
-            name: inputName.value
-        };
-        arrayAreas.push(data);
-        localStorage.setItem("Areas", JSON.stringify(arrayAreas));
-        selectArea();
-        form.reset();
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName.value)) {
+            if (inputName.value.length >= 4) {
+                validarData(inputName, arrayAreas);
+                if (validarBusqueda === false) {
+                    let data = {
+                        Id: Ids(),
+                        name: inputName.value.toLowerCase()
+                    };
+                    arrayAreas.push(data);
+                    localStorage.setItem("Areas", JSON.stringify(arrayAreas));
+                    selectArea();
+                    form.reset();
+                }
+                else {
+                    alert(`El area ${inputName.value.toLowerCase()} ya existe`);
+                }
+            }
+            else {
+                alert("El area tiene que tener minimo de 4 caracteres");
+            }
+        }
+        else {
+            alert("Error, solo se aceptan letras");
+        }
     }
     if (validarForm === enums.formEspecie) {
         let inputName = document.getElementById("floatingInput");
-        let data = {
-            Id: Ids(),
-            idArea: idObjPadre,
-            name: inputName.value
-        };
-        arrayEspecies.push(data);
-        localStorage.setItem("Especies", JSON.stringify(arrayEspecies));
-        selectArea();
-        form.reset();
+        if (/^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$/.test(inputName.value)) {
+            if (inputName.value.length >= 4) {
+                validarData(inputName, arrayEspecies);
+                if (validarBusqueda === false) {
+                    let data = {
+                        Id: Ids(),
+                        idArea: idObjPadre,
+                        name: inputName.value.toLowerCase()
+                    };
+                    arrayEspecies.push(data);
+                    localStorage.setItem("Especies", JSON.stringify(arrayEspecies));
+                    selectArea();
+                    form.reset();
+                }
+                else {
+                    alert(`El area ${inputName.value} ya existe`);
+                }
+            }
+            else {
+                alert("La especie tiene que tener minimo de 4 caracteres");
+            }
+        }
+        else {
+            alert("Error, solo se aceptan letras");
+        }
     }
     if (validarForm === enums.formAnimal) {
         let inputName = document.getElementById("floatingInput");
-        let data = {
-            Id: Ids(),
-            idEspecie: idObjPadre,
-            name: inputName.value
-        };
-        arrayAnimales.push(data);
-        localStorage.setItem("Animales", JSON.stringify(arrayAnimales));
-        selectArea();
-        form.reset();
+        validarData(inputName, arrayAnimales);
+        if (validarBusqueda === false) {
+            let data = {
+                Id: Ids(),
+                idEspecie: idObjPadre,
+                name: inputName.value.toLowerCase()
+            };
+            arrayAnimales.push(data);
+            localStorage.setItem("Animales", JSON.stringify(arrayAnimales));
+            selectArea();
+            form.reset();
+        }
+        else {
+            alert(`El area ${inputName.value} ya existe`);
+        }
     }
     if (validarForm === enums.formComentario) {
         let inputComment = document.getElementById("floatingTextarea");
@@ -435,8 +728,8 @@ function envio(e) {
         let data = {
             Id: Ids(),
             idAnimal: idObjPadre,
-            comment: inputComment.value,
-            nameUser: inputNameUser.value,
+            comment: inputComment.value.toLowerCase(),
+            nameUser: inputNameUser.value.toLowerCase(),
             fechaHora: fecha
         };
         arrayComentarios.push(data);
@@ -453,14 +746,21 @@ function envio(e) {
         let data = {
             Id: Ids(),
             idComentario: idObjPadre,
-            comment: inputComment.value,
-            nameUser: inputNameUser.value,
+            comment: inputComment.value.toLowerCase(),
+            nameUser: inputNameUser.value.toLowerCase(),
             fechaHora: fecha
         };
         arrayRespuestas.push(data);
         localStorage.setItem("Respuestas", JSON.stringify(arrayRespuestas));
         selectArea();
-        form.reset();
+        // form.reset(); no es el formulario
     }
+}
+function validarData(inputValue, arrayValidar) {
+    let array = [];
+    arrayValidar.forEach(element => {
+        array.push(element.name);
+    });
+    validarBusqueda = array.includes(inputValue.value);
 }
 document.addEventListener("DOMContentLoaded", eventsItems);
