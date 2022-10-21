@@ -87,7 +87,7 @@ function selectArea() {
         let btnSpecies = document.createElement("button");
         btnSpecies.className = "btn btn-secondary dropdown-toggle dropdown-toggle-split";
         btnSpecies.addEventListener("click", (e) => {
-            listaSpecie(element.Id);
+            listaSpecie(element.Id, element.name);
             sectComment.className = "d-none";
         });
         let spanToggle = document.createElement("span");
@@ -120,7 +120,7 @@ function formSpecieArea(nameArea) {
       </form>>
   `;
 }
-function listaSpecie(id) {
+function listaSpecie(id, nameArea) {
     let sectForm = document.getElementById("sectForm");
     sectForm.className = "d-none";
     let section = document.getElementById("sectVerEspecies");
@@ -131,7 +131,7 @@ function listaSpecie(id) {
     let divContentAnimal = document.createElement("div");
     divContentAnimal.className = "divAnimal containers-scroll borderDivScrool";
     let titleEspecie = document.createElement("h2");
-    titleEspecie.textContent = "Especies";
+    titleEspecie.textContent = `Especies ${nameArea}`;
     titleEspecie.className = "whiteColorTitles text-center";
     section.insertAdjacentElement("beforeend", divContentSpecie);
     section.insertAdjacentElement("beforeend", divContentAnimal);
@@ -146,7 +146,7 @@ function listaSpecie(id) {
             let btnVerAnimal = document.createElement("button");
             btnVerAnimal.className = "btn btn-secondary dropdown-toggle dropdown-toggle-split addSee";
             btnVerAnimal.addEventListener("click", (e) => {
-                listaAnimales(element.Id, divContentAnimal);
+                listaAnimales(element.Id, divContentAnimal, element.name);
             });
             let spanToggle = document.createElement("span");
             spanToggle.className = "visually-hidden";
@@ -196,12 +196,12 @@ function formAnimal(nameSpecie) {
     divInputArea.insertAdjacentElement("beforeend", labelArea);
     form.insertAdjacentElement("beforeend", btnSubmit);
 }
-function listaAnimales(id, divContentAnimal) {
+function listaAnimales(id, divContentAnimal, nameEspecie) {
     let sectForm = document.getElementById("sectForm");
     sectForm.className = "d-none";
     divContentAnimal.innerHTML = "";
     let titleAnimales = document.createElement("h2");
-    titleAnimales.textContent = "Animales";
+    titleAnimales.textContent = `Animales ${nameEspecie}`;
     titleAnimales.className = "whiteColorTitles text-center";
     let sectComment = document.getElementById("verComentarios");
     divContentAnimal.insertAdjacentElement("beforeend", titleAnimales);
@@ -216,7 +216,7 @@ function listaAnimales(id, divContentAnimal) {
             btnVerComentario.className = "btn btn-secondary dropdown-toggle dropdown-toggle-split";
             btnVerComentario.addEventListener("click", (e) => {
                 sectForm.className = "d-none";
-                listaComment(element.Id);
+                listaComment(element.Id, element.name);
             });
             let spanToggle = document.createElement("span");
             spanToggle.className = "visually-hidden";
@@ -226,7 +226,7 @@ function listaAnimales(id, divContentAnimal) {
             btnComentario.textContent = "+";
             btnComentario.addEventListener("click", (e) => {
                 sectComment.className = "d-none";
-                formComment();
+                formComment(element.name);
                 idObjPadre = element.Id;
             });
             divContentAnimal.insertAdjacentElement("beforeend", divAnimal);
@@ -237,14 +237,14 @@ function listaAnimales(id, divContentAnimal) {
         }
     });
 }
-function formComment() {
+function formComment(nameAnimal) {
     validarForm = enums.formComentario;
     let sectSearch = document.getElementById("verBusqueda");
     sectSearch.className = "d-none";
     let sectForm = document.getElementById("sectForm");
     sectForm.className = "sect-form";
     let titleForm = document.getElementById("titleForm");
-    titleForm.textContent = "Create Message";
+    titleForm.textContent = `Create Comment for ${nameAnimal}`;
     form.innerHTML = "";
     let divInputName = document.createElement("div");
     divInputName.className = "form-floating mb-3";
@@ -277,10 +277,10 @@ function formComment() {
     divInputMessage.insertAdjacentElement("beforeend", labelMessage);
     form.insertAdjacentElement("beforeend", btnSubmit);
 }
-function listaComment(id) {
+function listaComment(id, nameAnimal) {
     let section = document.getElementById("verComentarios");
     section.className = "verComentarios";
-    section.innerHTML = "";
+    section.innerHTML = `Comentarios de ${nameAnimal}`;
     arrayComentarios.forEach(element => {
         if (id === element.idAnimal) {
             let divContents = document.createElement("div");

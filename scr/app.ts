@@ -110,7 +110,7 @@ function selectArea() {
       let btnSpecies = document.createElement("button") as HTMLButtonElement;
       btnSpecies.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
       btnSpecies.addEventListener("click",(e)=>{
-        listaSpecie(element.Id);
+        listaSpecie(element.Id,element.name);
         sectComment.className="d-none";
       });
       let spanToggle = document.createElement("span") as HTMLSpanElement;
@@ -148,7 +148,7 @@ function formSpecieArea(nameArea:string) {
       </form>>
   `;
 }
-function listaSpecie(id:number) {
+function listaSpecie(id:number,nameArea:string) {
   let sectForm = document.getElementById("sectForm") as HTMLElement;
   sectForm.className="d-none";
   let section = document.getElementById("sectVerEspecies") as HTMLElement;
@@ -159,7 +159,7 @@ function listaSpecie(id:number) {
   let divContentAnimal = document.createElement("div") as HTMLDivElement;
   divContentAnimal.className="divAnimal containers-scroll borderDivScrool";
   let titleEspecie = document.createElement("h2") as HTMLElement;
-  titleEspecie.textContent="Especies";
+  titleEspecie.textContent=`Especies ${nameArea}`;
   titleEspecie.className="whiteColorTitles text-center";
   section.insertAdjacentElement("beforeend",divContentSpecie);
   section.insertAdjacentElement("beforeend",divContentAnimal);
@@ -175,7 +175,7 @@ function listaSpecie(id:number) {
         let btnVerAnimal = document.createElement("button");
         btnVerAnimal.className="btn btn-secondary dropdown-toggle dropdown-toggle-split addSee";
         btnVerAnimal.addEventListener("click",(e)=>{
-            listaAnimales(element.Id,divContentAnimal);
+            listaAnimales(element.Id,divContentAnimal,element.name);
         });
         let spanToggle = document.createElement("span");
         spanToggle.className="visually-hidden";
@@ -230,13 +230,13 @@ function formAnimal(nameSpecie:string) {
 
   form.insertAdjacentElement("beforeend",btnSubmit);
 }
-function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
+function listaAnimales(id:number,divContentAnimal:HTMLDivElement,nameEspecie:string) {
   let sectForm = document.getElementById("sectForm") as HTMLElement;
   sectForm.className="d-none";
 
   divContentAnimal.innerHTML="";
   let titleAnimales = document.createElement("h2") as HTMLElement;
-  titleAnimales.textContent="Animales";
+  titleAnimales.textContent=`Animales ${nameEspecie}`;
   titleAnimales.className="whiteColorTitles text-center";
   let sectComment = document.getElementById("verComentarios") as HTMLElement;
   divContentAnimal.insertAdjacentElement("beforeend",titleAnimales);
@@ -252,7 +252,7 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
           btnVerComentario.className="btn btn-secondary dropdown-toggle dropdown-toggle-split";
           btnVerComentario.addEventListener("click",(e)=>{
               sectForm.className="d-none";
-              listaComment(element.Id);
+              listaComment(element.Id,element.name);
           });
           let spanToggle = document.createElement("span") as HTMLSpanElement;
           spanToggle.className="visually-hidden";
@@ -262,7 +262,7 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
           btnComentario.textContent="+";
           btnComentario.addEventListener("click",(e)=>{
               sectComment.className="d-none";
-              formComment();
+              formComment(element.name);
               idObjPadre = element.Id;
           });
 
@@ -274,14 +274,14 @@ function listaAnimales(id:number,divContentAnimal:HTMLDivElement) {
       }
   });
 }
-function formComment(){
+function formComment(nameAnimal:string){
   validarForm = enums.formComentario
   let sectSearch = document.getElementById("verBusqueda") as HTMLElement;
   sectSearch.className="d-none"
   let sectForm = document.getElementById("sectForm") as HTMLElement
   sectForm.className="sect-form";
   let titleForm = document.getElementById("titleForm") as HTMLElement;
-  titleForm.textContent="Create Message"
+  titleForm.textContent=`Create Comment for ${nameAnimal}`
   form.innerHTML="";
 
   let divInputName = document.createElement("div") as HTMLDivElement;
@@ -320,64 +320,64 @@ function formComment(){
 
   form.insertAdjacentElement("beforeend",btnSubmit);
 }
-function listaComment(id:number) {
+function listaComment(id:number,nameAnimal:string) {
   let section = document.getElementById("verComentarios") as HTMLElement;
   section.className="verComentarios";
-  section.innerHTML="";
+  section.innerHTML=`Comentarios de ${nameAnimal}`;
   arrayComentarios.forEach(element => {
-      if(id === element.idAnimal){
-          let divContents = document.createElement("div");
-          divContents.className="toast fade show";
-          let divNameUser = document.createElement("div");
-          divNameUser.className="toast-header";
-          let iconMess = document.createElement("i");
-          iconMess.className="fa-solid fa-message";
-          let nameUser = document.createElement("strong");
-          nameUser.className="me-auto";
-          nameUser.textContent=element.nameUser;
-          let horaFech = document.createElement("p");
-          horaFech.textContent=element.fechaHora;
+    if(id === element.idAnimal){
+        let divContents = document.createElement("div");
+        divContents.className="toast fade show";
+        let divNameUser = document.createElement("div");
+        divNameUser.className="toast-header";
+        let iconMess = document.createElement("i");
+        iconMess.className="fa-solid fa-message";
+        let nameUser = document.createElement("strong");
+        nameUser.className="me-auto";
+        nameUser.textContent=element.nameUser;
+        let horaFech = document.createElement("p");
+        horaFech.textContent=element.fechaHora;
 
-          let divComment = document.createElement("div");
-          divComment.className="toast-body";
-          divComment.id="divComment";
-          let txtComment = document.createElement("p");
-          txtComment.textContent=element.comment;
-          let divRespuesta = document.createElement("div");
-          divRespuesta.className="btn-group";
-          let btnResponder = document.createElement("button");
-          btnResponder.className="btn btn-sm btn-secondary";
-          btnResponder.textContent="Responder";
-          btnResponder.addEventListener("click",(e)=>{
-              idObjPadre = element.Id;
-              formResponder(divForm,divRespComment);
-          })
-          let btnVerRespuestas = document.createElement("button");
-          btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
-          btnVerRespuestas.addEventListener("click",(e)=>{
-              listaRespuestas(element.Id,divRespComment,divForm);
-          })
-          let spanFlecha = document.createElement("span");
-          spanFlecha.className="visually-hidden";
-          spanFlecha.textContent="Toggle Dropdown";
-          let divForm = document.createElement("div");
-          let divRespComment = document.createElement("div");
+        let divComment = document.createElement("div");
+        divComment.className="toast-body";
+        divComment.id="divComment";
+        let txtComment = document.createElement("p");
+        txtComment.textContent=element.comment;
+        let divRespuesta = document.createElement("div");
+        divRespuesta.className="btn-group";
+        let btnResponder = document.createElement("button");
+        btnResponder.className="btn btn-sm btn-secondary";
+        btnResponder.textContent="Responder";
+        btnResponder.addEventListener("click",(e)=>{
+            idObjPadre = element.Id;
+            formResponder(divForm,divRespComment);
+        })
+        let btnVerRespuestas = document.createElement("button");
+        btnVerRespuestas.className="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split";
+        btnVerRespuestas.addEventListener("click",(e)=>{
+            listaRespuestas(element.Id,divRespComment,divForm);
+        })
+        let spanFlecha = document.createElement("span");
+        spanFlecha.className="visually-hidden";
+        spanFlecha.textContent="Toggle Dropdown";
+        let divForm = document.createElement("div");
+        let divRespComment = document.createElement("div");
 
-          section.insertAdjacentElement("beforeend",divContents);
-          divContents.insertAdjacentElement("beforeend",divNameUser);
-          divNameUser.insertAdjacentElement("beforeend",iconMess);
-          divNameUser.insertAdjacentElement("beforeend",nameUser);
-          divNameUser.insertAdjacentElement("beforeend",horaFech);
-          divContents.insertAdjacentElement("beforeend",divComment);
-          divComment.insertAdjacentElement("beforeend",txtComment);
-          divComment.insertAdjacentElement("beforeend",divRespuesta);
-          divRespuesta.insertAdjacentElement("beforeend",btnResponder);
-          divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
-          divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
-          divComment.insertAdjacentElement("beforeend",divForm);
-          divComment.insertAdjacentElement("beforeend",divRespComment);
-      }
-  });
+        section.insertAdjacentElement("beforeend",divContents);
+        divContents.insertAdjacentElement("beforeend",divNameUser);
+        divNameUser.insertAdjacentElement("beforeend",iconMess);
+        divNameUser.insertAdjacentElement("beforeend",nameUser);
+        divNameUser.insertAdjacentElement("beforeend",horaFech);
+        divContents.insertAdjacentElement("beforeend",divComment);
+        divComment.insertAdjacentElement("beforeend",txtComment);
+        divComment.insertAdjacentElement("beforeend",divRespuesta);
+        divRespuesta.insertAdjacentElement("beforeend",btnResponder);
+        divRespuesta.insertAdjacentElement("beforeend",btnVerRespuestas);
+        divRespuesta.insertAdjacentElement("beforeend",spanFlecha);
+        divComment.insertAdjacentElement("beforeend",divForm);
+        divComment.insertAdjacentElement("beforeend",divRespComment);
+    }
+});
 }
 function formResponder(divForm:HTMLDivElement,divRespComment:HTMLElement) {
   validarForm = enums.formRespuesta
